@@ -11,12 +11,11 @@ import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
+import android.media.MediaPlayer
 import android.util.Log
+import com.beaware.app.R
 import com.beaware.app.audio.UrgencyLevel
 import com.beaware.app.data.PreferencesManager
-import java.util.Locale
 
 /**
  * Manages alert responses: vibration, audio focus, and sound effects.
@@ -37,9 +36,6 @@ class AlertManager private constructor(private val context: Context) {
         
         // Maximum duration for continuous beeping (30 seconds)
         private const val MAX_DANGER_DURATION_MS = 30000L
-        
-        // TTS utterance ID
-        private const val TTS_UTTERANCE_ID = "beaware_announcement"
         
         // Singleton instance
         @Volatile
@@ -70,21 +66,20 @@ class AlertManager private constructor(private val context: Context) {
     private var toneGenerator: ToneGenerator? = null
     private val mainHandler = Handler(Looper.getMainLooper())
     
-    // Text-to-Speech for Level 3 announcements
-    private var textToSpeech: TextToSpeech? = null
-    private var isTtsReady = false
+    // MediaPlayer for voice announcements
+    private var mediaPlayer: MediaPlayer? = null
     
     // For continuous danger beeping
     private var isDangerAlertActive = false
     private var dangerBeepCount = 0
     
-    // Current sound type for TTS announcement
+    // Current sound type for announcement
     private var currentSoundType: String? = null
     
     // Track if music was playing before alert (to resume after)
     private var wasMusicPlayingBeforeAlert = false
 
-    // For TTS-only volume ducking (set STREAM_MUSIC to ~10% temporarily)
+    // For volume ducking (set STREAM_MUSIC to ~10% temporarily)
     private var previousMusicVolume: Int? = null
     private var previousMusicMaxVolume: Int? = null
     
@@ -107,49 +102,7 @@ class AlertManager private constructor(private val context: Context) {
     }
     
     init {
-        initTextToSpeech()
-    }
-    
-    /**
-     * Initialize Text-to-Speech engine
-     */
-    private fun initTextToSpeech() {
-        textToSpeech = TextToSpeech(context) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                val result = textToSpeech?.setLanguage(Locale.US)
-                isTtsReady = result != TextToSpeech.LANG_MISSING_DATA && 
-                             result != TextToSpeech.LANG_NOT_SUPPORTED
-                Log.d(TAG, "🗣️ TTS initialized: $isTtsReady")
-                
-                // Set up listener to release audio focus after speaking
-                textToSpeech?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String?) {
-                        Log.d(TAG, "🗣️ TTS started speaking")
-                    }
-                    
-                    override fun onDone(utteranceId: String?) {
-                        Log.d(TAG, "🗣️ TTS finished speaking")
-                        // Release audio focus after announcement
-                        mainHandler.postDelayed({
-                            restoreMusicVolumeAfterTts()
-                            releaseAudioFocus()
-                        }, 500)
-                    }
-                    
-                    @Deprecated("Deprecated in Java")
-                    override fun onError(utteranceId: String?) {
-                        Log.e(TAG, "🗣️ TTS error")
-                        mainHandler.post {
-                            restoreMusicVolumeAfterTts()
-                            releaseAudioFocus()
-                        }
-                    }
-                })
-            } else {
-                Log.e(TAG, "🗣️ TTS initialization failed")
-                isTtsReady = false
-            }
-        }
+        // MediaPlayer will be initialized on-demand
     }
 
     /**
@@ -170,19 +123,29 @@ class AlertManager private constructor(private val context: Context) {
             }
             
             // 🟡 LEVEL 2: CAUTION - Potential Danger
-            // Music at 20%, double ping, two strong vibrations
+            // Music to 10%, ping sound only (no vibration), voice announcement for sirens
             UrgencyLevel.DANGER -> {
+                // Request audio focus first to duck music
                 requestAudioFocusDuck()
-                vibrateCaution()
                 playDoublePing()
+                // Only voice announcements for sirens, with volume lowering to 10%
+                if (preferencesManager.useSpeechAnnouncements && isTtsCategoryEnabled(soundType)) {
+                    // Delay announcement slightly so it doesn't overlap with ping
+                    mainHandler.postDelayed({
+                        playVoiceAnnouncementLevel2(soundType)
+                    }, 600)
+                }
             }
             
             // 🟢 LEVEL 3: AWARENESS - No Immediate Danger
-            // Brief music duck, TTS announcement or soft ping, light vibration
+            // Voice announcement only for bells/chimes with volume lowering, soft ping for others
             UrgencyLevel.WARNING -> {
-                vibrateAwareness()
-                if (preferencesManager.useSpeechAnnouncements && isTtsReady) {
-                    speakAnnouncement(soundType)
+                // Check if this is a bell/chime sound
+                if (isBellOrChime(soundType) && preferencesManager.useSpeechAnnouncements && 
+                    isTtsCategoryEnabled(soundType)) {
+                    // Request audio focus to duck music
+                    requestAudioFocusForSpeech()
+                    playVoiceAnnouncementLevel3(soundType)
                 } else {
                     playSoftPing()
                 }
@@ -222,7 +185,7 @@ class AlertManager private constructor(private val context: Context) {
     }
 
     /**
-     * 🟡 Request audio focus to DUCK other media to ~20% (Level 2)
+     * 🟡 Request audio focus to DUCK other media to ~20% (Level 2 - for ping sounds)
      */
     private fun requestAudioFocusDuck() {
         val audioAttributes = AudioAttributes.Builder()
@@ -240,6 +203,32 @@ class AlertManager private constructor(private val context: Context) {
 
         val result = audioManager.requestAudioFocus(audioFocusRequest!!)
         Log.d(TAG, "🟡 Audio focus DUCK request result: $result (music at ~20%)")
+    }
+    
+    /**
+     * Request audio focus to PAUSE music (for voice announcements)
+     */
+    private fun requestAudioFocusToPauseMusic() {
+        // Remember if music was playing
+        wasMusicPlayingBeforeAlert = audioManager.isMusicActive
+        
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build()
+
+        // Use TRANSIENT to pause music temporarily
+        audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+            .setAudioAttributes(audioAttributes)
+            .setAcceptsDelayedFocusGain(false)
+            .setWillPauseWhenDucked(false)
+            .setOnAudioFocusChangeListener { focusChange ->
+                Log.d(TAG, "Audio focus changed: $focusChange")
+            }
+            .build()
+
+        val result = audioManager.requestAudioFocus(audioFocusRequest!!)
+        Log.d(TAG, "🎵 Audio focus PAUSE request result: $result (music should pause)")
     }
     
     /**
@@ -505,32 +494,302 @@ class AlertManager private constructor(private val context: Context) {
     }
     
     /**
-     * 🟢 Speak an announcement for Level 3 (AWARENESS) alerts
-     * Examples: "A bike is coming", "A bus is coming"
+     * Get audio resource ID for a sound type
      */
-    private fun speakAnnouncement(soundType: String?) {
-        if (!isTtsReady || textToSpeech == null) {
-            Log.w(TAG, "TTS not ready, falling back to ping")
+    private fun getAudioResourceId(soundType: String?): Int? {
+        val s = soundType?.trim().orEmpty()
+        return when {
+            // Sirens/Emergencies
+            s.contains("SIREN", ignoreCase = true) ||
+                s.contains("AMBULANCE", ignoreCase = true) ||
+                s.contains("POLICE", ignoreCase = true) ||
+                s.contains("FIRE TRUCK", ignoreCase = true) ||
+                s.contains("FIRE ENGINE", ignoreCase = true) ||
+                s.contains("EMERGENCY", ignoreCase = true) ->
+                getResourceId("tts_ambulance_coming")
+            
+            // Bells/Chimes/Bikes
+            s.contains("BELL", ignoreCase = true) ||
+                s.contains("CHIME", ignoreCase = true) ||
+                s.contains("DING", ignoreCase = true) ||
+                s.contains("BICYCLE", ignoreCase = true) ||
+                s.contains("BIKE", ignoreCase = true) ->
+                getResourceId("tts_bike_coming")
+            
+            // Vehicles
+            s.contains("BUS", ignoreCase = true) -> getResourceId("tts_bus_arriving")
+            s.contains("TRAIN", ignoreCase = true) -> getResourceId("tts_train_approaching")
+            
+            // General awareness
+            s.contains("DOG", ignoreCase = true) -> getResourceId("tts_dog_nearby")
+            s.contains("FOOTSTEPS", ignoreCase = true) -> getResourceId("tts_footsteps_nearby")
+            s.contains("DOOR", ignoreCase = true) -> getResourceId("tts_door_closed")
+            s.contains("CONSTRUCTION", ignoreCase = true) -> getResourceId("tts_construction_nearby")
+            s.contains("TRAFFIC", ignoreCase = true) -> getResourceId("tts_traffic_nearby")
+            
+            else -> getResourceId("tts_be_aware")
+        }
+    }
+    
+    /**
+     * Get resource ID by name (Android resources don't include file extensions)
+     */
+    private fun getResourceId(baseName: String): Int? {
+        val resources = context.resources
+        val packageName = context.packageName
+        
+        // Android resource names don't include file extensions
+        // So "tts_ambulance_coming.mp3" in res/raw/ is accessed as "tts_ambulance_coming"
+        val id = resources.getIdentifier(baseName, "raw", packageName)
+        if (id != 0) {
+            Log.d(TAG, "✅ Found audio resource: $baseName (ID: $id)")
+            return id
+        } else {
+            Log.w(TAG, "❌ Audio resource not found: $baseName")
+            return null
+        }
+    }
+    
+    /**
+     * 🟡 LEVEL 2: Play voice announcement - Stop music, play announcement, resume music
+     * For sirens: "An ambulance is coming"
+     */
+    private fun playVoiceAnnouncementLevel2(soundType: String?) {
+        val audioResId = getAudioResourceId(soundType)
+        if (audioResId == null) {
+            Log.w(TAG, "🟡 No audio file found for: $soundType")
+            return
+        }
+        
+        Log.d(TAG, "🟡 Level 2 Voice Announcement: $soundType (resource ID: $audioResId)")
+        
+        // Remember if music was playing
+        val musicWasPlaying = audioManager.isMusicActive
+        Log.d(TAG, "🎵 Music was playing: $musicWasPlaying")
+        
+        // Stop music by requesting audio focus to pause
+        requestAudioFocusToPauseMusic()
+        
+        // Stop any existing voice announcement
+        stopVoiceAnnouncement()
+        
+        // Create and play MediaPlayer
+        try {
+            val mp = MediaPlayer.create(context, audioResId)
+            if (mp == null) {
+                Log.e(TAG, "❌ Failed to create MediaPlayer for resource ID: $audioResId")
+                if (musicWasPlaying) resumeMusic()
+                return
+            }
+            
+            mediaPlayer = mp.apply {
+                // Use STREAM_MUSIC so it plays through headphones at full quality
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                            .build()
+                    )
+                } else {
+                    @Suppress("DEPRECATION")
+                    setAudioStreamType(AudioManager.STREAM_MUSIC)
+                }
+                
+                // Set volume to maximum
+                setVolume(1.0f, 1.0f)
+                
+                setOnCompletionListener {
+                    Log.d(TAG, "🗣️ Voice announcement completed")
+                    release()
+                    mediaPlayer = null
+                    // Resume music if it was playing
+                    if (musicWasPlaying) {
+                        mainHandler.postDelayed({
+                            resumeMusic()
+                        }, 300) // Small delay to ensure announcement fully finishes
+                    }
+                    releaseAudioFocus()
+                }
+                setOnErrorListener { _, what, extra ->
+                    Log.e(TAG, "🗣️ MediaPlayer error: what=$what, extra=$extra")
+                    release()
+                    mediaPlayer = null
+                    if (musicWasPlaying) resumeMusic()
+                    releaseAudioFocus()
+                    true
+                }
+                
+                // Start playing (MediaPlayer.create already prepared it)
+                try {
+                    start()
+                    Log.d(TAG, "🗣️ Voice announcement started playing (resource: $audioResId)")
+                } catch (e: Exception) {
+                    Log.e(TAG, "❌ Failed to start MediaPlayer", e)
+                    release()
+                    mediaPlayer = null
+                    if (musicWasPlaying) resumeMusic()
+                    releaseAudioFocus()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to play voice announcement", e)
+            if (musicWasPlaying) resumeMusic()
+            releaseAudioFocus()
+        }
+    }
+    
+    /**
+     * 🟢 LEVEL 3: Play voice announcement for bells/chimes - Stop music, play announcement, resume music
+     * For bells: "A bike is coming"
+     */
+    private fun playVoiceAnnouncementLevel3(soundType: String?) {
+        val audioResId = getAudioResourceId(soundType)
+        if (audioResId == null) {
+            Log.w(TAG, "🟢 No audio file found for: $soundType, falling back to ping")
             playSoftPing()
             return
         }
         
-        // Build the announcement message based on sound type
-        val message = buildAnnouncementMessage(soundType)
+        Log.d(TAG, "🟢 Level 3 Voice Announcement: $soundType (resource ID: $audioResId)")
         
-        // Request audio focus to lower music
-        requestAudioFocusForSpeech()
-
-        // Additionally reduce STREAM_MUSIC volume to ~10% while TTS is speaking, then restore.
-        // This gives us a predictable duck level (audio focus duck level varies by device/player).
-        temporarilyDuckMusicVolumeForTts(targetPercent = 0.10f)
+        // Remember if music was playing
+        val musicWasPlaying = audioManager.isMusicActive
+        Log.d(TAG, "🎵 Music was playing: $musicWasPlaying")
         
-        // Speak the announcement
-        val params = android.os.Bundle()
-        params.putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_NOTIFICATION)
+        // Stop music by requesting audio focus to pause
+        requestAudioFocusToPauseMusic()
         
-        textToSpeech?.speak(message, TextToSpeech.QUEUE_FLUSH, params, TTS_UTTERANCE_ID)
-        Log.d(TAG, "🗣️ Speaking: \"$message\"")
+        // Stop any existing voice announcement
+        stopVoiceAnnouncement()
+        
+        // Create and play MediaPlayer
+        try {
+            val mp = MediaPlayer.create(context, audioResId)
+            if (mp == null) {
+                Log.e(TAG, "❌ Failed to create MediaPlayer for resource ID: $audioResId, falling back to ping")
+                if (musicWasPlaying) resumeMusic()
+                releaseAudioFocus()
+                playSoftPing()
+                return
+            }
+            
+            mediaPlayer = mp.apply {
+                // Use STREAM_MUSIC so it plays through headphones at full quality
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                            .build()
+                    )
+                } else {
+                    @Suppress("DEPRECATION")
+                    setAudioStreamType(AudioManager.STREAM_MUSIC)
+                }
+                
+                // Set volume to maximum
+                setVolume(1.0f, 1.0f)
+                
+                setOnCompletionListener {
+                    Log.d(TAG, "🗣️ Voice announcement completed")
+                    release()
+                    mediaPlayer = null
+                    // Resume music if it was playing
+                    if (musicWasPlaying) {
+                        mainHandler.postDelayed({
+                            resumeMusic()
+                        }, 300) // Small delay to ensure announcement fully finishes
+                    }
+                    releaseAudioFocus()
+                }
+                setOnErrorListener { _, what, extra ->
+                    Log.e(TAG, "🗣️ MediaPlayer error: what=$what, extra=$extra")
+                    release()
+                    mediaPlayer = null
+                    if (musicWasPlaying) resumeMusic()
+                    releaseAudioFocus()
+                    true
+                }
+                
+                // Start playing (MediaPlayer.create already prepared it)
+                try {
+                    start()
+                    Log.d(TAG, "🗣️ Voice announcement started playing (resource: $audioResId)")
+                } catch (e: Exception) {
+                    Log.e(TAG, "❌ Failed to start MediaPlayer", e)
+                    release()
+                    mediaPlayer = null
+                    if (musicWasPlaying) resumeMusic()
+                    releaseAudioFocus()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to play voice announcement", e)
+            if (musicWasPlaying) resumeMusic()
+            releaseAudioFocus()
+            playSoftPing() // Fallback to ping
+        }
+    }
+    
+    /**
+     * Stop any ongoing voice announcement
+     */
+    private fun stopVoiceAnnouncement() {
+        mediaPlayer?.let {
+            try {
+                if (it.isPlaying) {
+                    it.stop()
+                }
+                it.release()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error stopping MediaPlayer", e)
+            }
+            mediaPlayer = null
+        }
+    }
+    
+    /**
+     * Lower music volume to 10%
+     */
+    private fun lowerVolumeToTenPercent() {
+        try {
+            val max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC).coerceAtLeast(1)
+            val current = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC).coerceIn(0, max)
+            
+            // Store current volume
+            if (previousMusicVolume == null) {
+                previousMusicMaxVolume = max
+                previousMusicVolume = current
+            }
+            
+            val targetVolume = kotlin.math.max(1, kotlin.math.round(max * 0.10f).toInt())
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, targetVolume, 0)
+            Log.d(TAG, "🎵 Lowered volume from $current/$max to $targetVolume/$max (10%)")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to lower volume", e)
+        }
+    }
+    
+    /**
+     * Restore music volume to previous level
+     */
+    private fun restoreVolumeAfterTts() {
+        try {
+            val prev = previousMusicVolume
+            if (prev != null) {
+                val max = previousMusicMaxVolume ?: audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+                val restoreTo = prev.coerceIn(0, max.coerceAtLeast(1))
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, restoreTo, 0)
+                Log.d(TAG, "🎵 Restored volume to $restoreTo/$max")
+                previousMusicVolume = null
+                previousMusicMaxVolume = null
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to restore volume", e)
+            previousMusicVolume = null
+            previousMusicMaxVolume = null
+        }
     }
 
     private fun temporarilyDuckMusicVolumeForTts(targetPercent: Float) {
@@ -583,6 +842,55 @@ class AlertManager private constructor(private val context: Context) {
     }
     
     /**
+     * Check if sound is a bell or chime
+     */
+    private fun isBellOrChime(soundType: String?): Boolean {
+        val s = soundType?.trim().orEmpty()
+        return s.contains("BELL", ignoreCase = true) ||
+               s.contains("CHIME", ignoreCase = true) ||
+               s.contains("DING", ignoreCase = true) ||
+               s.contains("BICYCLE", ignoreCase = true) ||
+               s.contains("BIKE", ignoreCase = true)
+    }
+
+    /**
+     * Check if TTS is enabled for the given sound type's category
+     */
+    private fun isTtsCategoryEnabled(soundType: String?): Boolean {
+        val s = soundType?.trim().orEmpty()
+        
+        return when {
+            s.isBlank() -> preferencesManager.ttsGeneralEnabled
+            
+            // Bells / Bikes category
+            s.contains("BELL", ignoreCase = true) ||
+                s.contains("CHIME", ignoreCase = true) ||
+                s.contains("DING", ignoreCase = true) ||
+                s.contains("BICYCLE", ignoreCase = true) ||
+                s.contains("BIKE", ignoreCase = true) ->
+                preferencesManager.ttsBellsEnabled
+            
+            // Sirens / Emergency category
+            s.contains("SIREN", ignoreCase = true) ||
+                s.contains("AMBULANCE", ignoreCase = true) ||
+                s.contains("POLICE", ignoreCase = true) ||
+                s.contains("FIRE TRUCK", ignoreCase = true) ||
+                s.contains("FIRE ENGINE", ignoreCase = true) ||
+                s.contains("EMERGENCY", ignoreCase = true) ->
+                preferencesManager.ttsSirensEnabled
+            
+            // Vehicles category
+            s.contains("BUS", ignoreCase = true) ||
+                s.contains("TRAIN", ignoreCase = true) ||
+                s.contains("TRAFFIC", ignoreCase = true) ->
+                preferencesManager.ttsVehiclesEnabled
+            
+            // General awareness category (dog, footsteps, door, construction, etc.)
+            else -> preferencesManager.ttsGeneralEnabled
+        }
+    }
+
+    /**
      * Build the TTS announcement message based on detected sound type
      */
     private fun buildAnnouncementMessage(soundType: String?): String {
@@ -590,14 +898,14 @@ class AlertManager private constructor(private val context: Context) {
         return when {
             s.isBlank() -> "Be aware of your surroundings"
 
-            // Sirens: always announce as ambulance (non-generic)
+            // Sirens: announce as "An ambulance is coming"
             s.contains("SIREN", ignoreCase = true) ||
                 s.contains("AMBULANCE", ignoreCase = true) ||
                 s.contains("POLICE", ignoreCase = true) ||
                 s.contains("FIRE TRUCK", ignoreCase = true) ||
                 s.contains("FIRE ENGINE", ignoreCase = true) ||
                 s.contains("EMERGENCY", ignoreCase = true) ->
-                "Ambulance nearby"
+                "An ambulance is coming"
 
             // Any bell/chime/ding: announce as bike coming (non-generic)
             s.contains("BELL", ignoreCase = true) ||
@@ -607,7 +915,7 @@ class AlertManager private constructor(private val context: Context) {
                 s.contains("BIKE", ignoreCase = true) ->
                 "A bike is coming"
 
-            s.contains("BUS", ignoreCase = true) -> "A bus is coming"
+            s.contains("BUS", ignoreCase = true) -> "A bus is arriving"
             s.contains("TRAIN", ignoreCase = true) -> "A train is approaching"
 
             // Keep remaining messages specific but short
@@ -630,11 +938,11 @@ class AlertManager private constructor(private val context: Context) {
         // Stop continuous danger beeping
         stopDangerTone()
         
-        // Stop TTS
-        textToSpeech?.stop()
+        // Stop voice announcements
+        stopVoiceAnnouncement()
 
-        // Restore any temporary TTS volume ducking
-        restoreMusicVolumeAfterTts()
+        // Restore any temporary volume ducking
+        restoreVolumeAfterTts()
         
         // Stop vibration
         vibrator.cancel()
@@ -659,7 +967,6 @@ class AlertManager private constructor(private val context: Context) {
      */
     fun release() {
         stopAlerts()
-        textToSpeech?.shutdown()
-        textToSpeech = null
+        stopVoiceAnnouncement()
     }
 }

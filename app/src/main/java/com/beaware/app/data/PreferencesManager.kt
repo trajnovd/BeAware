@@ -15,6 +15,12 @@ class PreferencesManager(context: Context) {
         private const val KEY_PROTECTION_ENABLED = "protection_enabled"
         private const val KEY_FIRST_LAUNCH = "first_launch"
         private const val KEY_USE_SPEECH = "use_speech_announcements"
+        
+        // TTS category preferences
+        private const val KEY_TTS_BELLS = "tts_bells_enabled"
+        private const val KEY_TTS_SIRENS = "tts_sirens_enabled"
+        private const val KEY_TTS_VEHICLES = "tts_vehicles_enabled"
+        private const val KEY_TTS_GENERAL = "tts_general_enabled"
     }
 
     private val prefs: SharedPreferences = 
@@ -51,6 +57,36 @@ class PreferencesManager(context: Context) {
     var useSpeechAnnouncements: Boolean
         get() = prefs.getBoolean(KEY_USE_SPEECH, true)
         set(value) = prefs.edit().putBoolean(KEY_USE_SPEECH, value).apply()
+
+    // ==================== TTS CATEGORY PREFERENCES ====================
+    
+    /**
+     * Enable TTS for bell/bike sounds (e.g., "A bike is coming")
+     */
+    var ttsBellsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_TTS_BELLS, true)
+        set(value) = prefs.edit().putBoolean(KEY_TTS_BELLS, value).apply()
+    
+    /**
+     * Enable TTS for siren sounds (e.g., "Ambulance nearby")
+     */
+    var ttsSirensEnabled: Boolean
+        get() = prefs.getBoolean(KEY_TTS_SIRENS, true)
+        set(value) = prefs.edit().putBoolean(KEY_TTS_SIRENS, value).apply()
+    
+    /**
+     * Enable TTS for vehicle sounds (e.g., "A bus is coming", "A train is approaching")
+     */
+    var ttsVehiclesEnabled: Boolean
+        get() = prefs.getBoolean(KEY_TTS_VEHICLES, true)
+        set(value) = prefs.edit().putBoolean(KEY_TTS_VEHICLES, value).apply()
+    
+    /**
+     * Enable TTS for general awareness sounds (e.g., "Dog nearby", "Footsteps nearby")
+     */
+    var ttsGeneralEnabled: Boolean
+        get() = prefs.getBoolean(KEY_TTS_GENERAL, true)
+        set(value) = prefs.edit().putBoolean(KEY_TTS_GENERAL, value).apply()
 
     /**
      * Check if emergency contact has been configured

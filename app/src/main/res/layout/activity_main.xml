@@ -4,8 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
     tools:context=".ui.MainActivity">
+
+    <!-- Background image -->
+    <ImageView
+        android:id="@+id/ivBackground"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/backround_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Liquid blur layer over the background (UI stays sharp above this) -->
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/blurBackground"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#66101018"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Subtle animated liquid/glow overlay to make the blur feel \"liquid\" -->
+    <com.beaware.app.ui.LiquidOverlayView
+        android:id="@+id/liquidOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- App Title -->
     <TextView
@@ -34,26 +70,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
-    <!-- Waveform Container -->
+    <!-- Particle Visualizer Container (circular) -->
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardWaveform"
+        android:id="@+id/cardVisualizer"
         android:layout_width="0dp"
-        android:layout_height="160dp"
+        android:layout_height="0dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="24dp"
-        app:cardBackgroundColor="@color/primary_dark"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
+        android:layout_marginBottom="32dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="999dp"
+        app:cardElevation="0dp"
+        app:strokeColor="#22FFFFFF"
+        app:strokeWidth="1dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintWidth_percent="0.86"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
 
-        <com.beaware.app.ui.WaveformView
-            android:id="@+id/waveformView"
+        <com.beaware.app.ui.ParticleVisualizerView
+            android:id="@+id/particleVisualizerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp" />
+            android:padding="8dp" />
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -65,11 +106,11 @@
         android:layout_marginTop="32dp"
         android:text="@string/protection_inactive"
         android:textColor="@color/inactive_gray"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardWaveform" />
+        app:layout_constraintTop_toBottomOf="@id/cardVisualizer" />
 
     <TextView
         android:id="@+id/tvStatusHint"
@@ -83,24 +124,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvStatus" />
 
-    <!-- Power Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnPower"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/button_inactive"
-        android:text="START"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:cornerRadius="80dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvStatusHint"
-        app:strokeColor="@color/accent"
-        app:strokeWidth="3dp" />
-
     <!-- Last Detection Card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardLastDetection"
@@ -112,7 +135,7 @@
         android:visibility="gone"
         app:cardBackgroundColor="@color/primary_dark"
         app:cardCornerRadius="12dp"
-        app:layout_constraintBottom_toTopOf="@id/btnSettings"
+        app:layout_constraintBottom_toTopOf="@id/powerButtonContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible">
@@ -144,19 +167,110 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Settings Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnSettings"
-        style="@style/Widget.Material3.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:text="⚙️ Settings"
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
+    <!-- Left: round map button with glass/blur background -->
+    <FrameLayout
+        android:id="@+id/mapButtonContainer"
+        android:layout_width="74dp"
+        android:layout_height="74dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/bg_glass_circle"
+        android:clipToOutline="true"
+        android:outlineProvider="background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/blurMap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            android:clipToOutline="false" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnMap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Danger Map"
+            android:src="@drawable/ic_map"
+            app:fabCustomSize="74dp"
+            app:useCompatPadding="false"
+            app:backgroundTint="@android:color/transparent"
+            app:rippleColor="#22FFFFFF"
+            app:elevation="0dp"
+            app:tint="@color/white" />
+    </FrameLayout>
+
+    <!-- Center: Big round button with glass/blur background -->
+    <FrameLayout
+        android:id="@+id/powerButtonContainer"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_marginBottom="26dp"
+        android:background="@drawable/bg_glass_circle"
+        android:clipToOutline="true"
+        android:outlineProvider="background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Backdrop (blur setup in code). Falls back to glass shape if blur isn't available. -->
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/blurPower"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            android:clipToOutline="false" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnPower"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Start/Stop Protection"
+            android:src="@android:drawable/ic_btn_speak_now"
+            app:backgroundTint="@android:color/transparent"
+            app:elevation="0dp"
+            app:fabCustomSize="92dp"
+            app:rippleColor="#22FFFFFF"
+            app:tint="@color/white"
+            app:useCompatPadding="false" />
+    </FrameLayout>
+
+    <!-- Right: round settings button with glass/blur background -->
+    <FrameLayout
+        android:id="@+id/settingsButtonContainer"
+        android:layout_width="74dp"
+        android:layout_height="74dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/bg_glass_circle"
+        android:clipToOutline="true"
+        android:outlineProvider="background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/blurSettings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            android:clipToOutline="false" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnSettings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Settings"
+            android:src="@drawable/ic_settings_gear"
+            app:fabCustomSize="74dp"
+            app:useCompatPadding="false"
+            app:backgroundTint="@android:color/transparent"
+            app:rippleColor="#22FFFFFF"
+            app:elevation="0dp"
+            app:tint="@color/white" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

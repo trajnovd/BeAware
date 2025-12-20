@@ -46,6 +46,7 @@ class SettingsActivity : AppCompatActivity() {
         // Speech toggle listener
         binding.switchSpeech.setOnCheckedChangeListener { _, isChecked ->
             preferencesManager.useSpeechAnnouncements = isChecked
+            updateTtsCategoriesVisibility(isChecked)
             val message = if (isChecked) {
                 "Speech announcements enabled"
             } else {
@@ -53,6 +54,29 @@ class SettingsActivity : AppCompatActivity() {
             }
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
+        
+        // TTS Category toggles
+        binding.switchTtsBells.setOnCheckedChangeListener { _, isChecked ->
+            preferencesManager.ttsBellsEnabled = isChecked
+        }
+        
+        binding.switchTtsSirens.setOnCheckedChangeListener { _, isChecked ->
+            preferencesManager.ttsSirensEnabled = isChecked
+        }
+        
+        binding.switchTtsVehicles.setOnCheckedChangeListener { _, isChecked ->
+            preferencesManager.ttsVehiclesEnabled = isChecked
+        }
+        
+        binding.switchTtsGeneral.setOnCheckedChangeListener { _, isChecked ->
+            preferencesManager.ttsGeneralEnabled = isChecked
+        }
+    }
+    
+    private fun updateTtsCategoriesVisibility(speechEnabled: Boolean) {
+        val visibility = if (speechEnabled) android.view.View.VISIBLE else android.view.View.GONE
+        binding.tvTtsCategoriesHeader.visibility = visibility
+        binding.cardTtsCategories.visibility = visibility
     }
 
     private fun loadSettings() {
@@ -63,6 +87,15 @@ class SettingsActivity : AppCompatActivity() {
         
         // Load speech preference
         binding.switchSpeech.isChecked = preferencesManager.useSpeechAnnouncements
+        
+        // Load TTS category preferences
+        binding.switchTtsBells.isChecked = preferencesManager.ttsBellsEnabled
+        binding.switchTtsSirens.isChecked = preferencesManager.ttsSirensEnabled
+        binding.switchTtsVehicles.isChecked = preferencesManager.ttsVehiclesEnabled
+        binding.switchTtsGeneral.isChecked = preferencesManager.ttsGeneralEnabled
+        
+        // Show/hide TTS categories based on speech announcements toggle
+        updateTtsCategoriesVisibility(preferencesManager.useSpeechAnnouncements)
     }
 
     private fun saveEmergencyContact() {

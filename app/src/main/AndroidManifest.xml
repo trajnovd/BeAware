@@ -34,6 +34,10 @@
     <!-- Allows adjusting device stream volume (normal permission, auto-granted) -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
+    <!-- Internet for map tiles -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name=".BeAwareApplication"
         android:allowBackup="true"
@@ -58,6 +62,12 @@
         <!-- Settings Activity -->
         <activity
             android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.BeAware" />
+        
+        <!-- Map Activity -->
+        <activity
+            android:name=".ui.MapActivity"
             android:exported="false"
             android:theme="@style/Theme.BeAware" />
         

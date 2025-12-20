@@ -57,9 +57,9 @@ data class SoundClassification(
             "Explosion" to "EXPLOSION",
             "Boom" to "EXPLOSION",
             
-            // Running (often combined with other danger sounds)
-            "Run" to "RUNNING",
-            "Running" to "RUNNING"
+//            // Running (often combined with other danger sounds)
+//            "Run" to "RUNNING",
+//            "Running" to "RUNNING"
         )
 
         // =================================================================
@@ -81,17 +81,17 @@ data class SoundClassification(
             "Car horn" to "CAR HORN",
             "Honk" to "CAR HORN",
             "Honking" to "CAR HORN",
-            "Air horn, truck horn" to "TRUCK HORN",
-            "Truck horn" to "TRUCK HORN",
-            "Beep, bleep" to "WARNING BEEP",
+//            "Air horn, truck horn" to "TRUCK HORN",
+//            "Truck horn" to "TRUCK HORN",
+//            "Beep, bleep" to "WARNING BEEP",
             
             // Vehicle engine sounds
             "Engine" to "ENGINE REVVING",
             "Revving, vroom" to "ENGINE REVVING",
             "Engine starting" to "ENGINE STARTING",
             "Accelerating, revving, vroom" to "ENGINE REVVING",
-            "Race car, auto racing" to "RACING ENGINE",
-            "Motorcycle" to "MOTORCYCLE",
+//            "Race car, auto racing" to "RACING ENGINE",
+//            "Motorcycle" to "MOTORCYCLE",
             
             // Tire sounds
             "Tire squeal" to "TIRE SCREECH",
@@ -99,9 +99,9 @@ data class SoundClassification(
             "Squeal" to "TIRE SCREECH",
             
             // Shouting (non-distress)
-            "Crowd" to "CROWD SHOUTING",
-            "Cheering" to "CROWD NOISE",
-            "Cheer" to "CROWD NOISE",
+//            "Crowd" to "CROWD SHOUTING",
+//            "Cheering" to "CROWD NOISE",
+//            "Cheer" to "CROWD NOISE",
             
             // Alarms
             "Alarm" to "ALARM",
@@ -132,12 +132,12 @@ data class SoundClassification(
             
             // Doors
             "Door" to "DOOR",
-            "Sliding door" to "DOOR CLOSING",
+//            "Sliding door" to "DOOR CLOSING",
             "Slam" to "DOOR SLAM",
             
             // Footsteps
-            "Footsteps" to "FOOTSTEPS",
-            "Walk, footsteps" to "FOOTSTEPS",
+//            "Footsteps" to "FOOTSTEPS",
+//            "Walk, footsteps" to "FOOTSTEPS",
             
             // Dog sounds (non-aggressive)
             "Dog" to "DOG NEARBY",
@@ -147,25 +147,25 @@ data class SoundClassification(
             "Whine, whimper" to "DOG WHIMPERING",
             
             // Construction / work sounds (distant)
-            "Power tool" to "CONSTRUCTION",
-            "Drill" to "CONSTRUCTION",
-            "Hammer" to "CONSTRUCTION",
-            "Sawing" to "CONSTRUCTION",
-            "Jackhammer" to "CONSTRUCTION",
-            
+//            "Power tool" to "CONSTRUCTION",
+//            "Drill" to "CONSTRUCTION",
+//            "Hammer" to "CONSTRUCTION",
+//            "Sawing" to "CONSTRUCTION",
+//            "Jackhammer" to "CONSTRUCTION",
+//
             // General environment
             "Traffic noise, roadway noise" to "TRAFFIC",
-            "Toot" to "HORN",
-            "Whistle" to "WHISTLE",
-            "Steam whistle" to "WHISTLE",
-            "Train whistle" to "TRAIN WHISTLE",
-            "Train horn" to "TRAIN HORN",
+//            "Toot" to "HORN",
+//            "Whistle" to "WHISTLE",
+//            "Steam whistle" to "WHISTLE",
+//            "Train whistle" to "TRAIN WHISTLE",
+//            "Train horn" to "TRAIN HORN",
             
             // Other awareness sounds
-            "Bird" to "BIRD",
-            "Chirp, tweet" to "BIRD",
-            "Clapping" to "CLAPPING",
-            "Fireworks" to "FIREWORKS"
+//            "Bird" to "BIRD",
+//            "Chirp, tweet" to "BIRD",
+//            "Clapping" to "CLAPPING",
+//            "Fireworks" to "FIREWORKS"
         )
 
         /**

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.view.ViewGroup
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -18,9 +19,10 @@ import com.beaware.app.data.PreferencesManager
 import com.beaware.app.databinding.ActivityMainBinding
 import com.beaware.app.service.AudioClassifierService
 import com.beaware.app.R
+import eightbitlab.com.blurview.RenderScriptBlur
 
 /**
- * Main activity - Home screen with protection toggle and waveform visualization.
+ * Main activity - Home screen with protection toggle and 3D particle audio visualizer.
  */
 class MainActivity : AppCompatActivity(), AudioClassifierService.ServiceListener {
 
@@ -67,6 +69,7 @@ class MainActivity : AppCompatActivity(), AudioClassifierService.ServiceListener
         preferencesManager = PreferencesManager(this)
         
         setupUI()
+        setupBlur()
         checkServiceRunning()
     }
 
@@ -81,6 +84,47 @@ class MainActivity : AppCompatActivity(), AudioClassifierService.ServiceListener
 
         binding.btnSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
+        }
+        
+        binding.btnMap.setOnClickListener {
+            startActivity(Intent(this, MapActivity::class.java))
+        }
+    }
+
+    private fun setupBlur() {
+        // Real backdrop blur for the glass buttons.
+        // If BlurView can't initialize (very rare), the shape background still looks good.
+        val decorView = window.decorView
+        val rootView = decorView.findViewById<ViewGroup>(android.R.id.content)
+        val windowBackground = decorView.background
+
+        try {
+            // Background blur (placed above background image, below all UI)
+            binding.blurBackground
+                .setupWith(rootView, RenderScriptBlur(this))
+                .setFrameClearDrawable(windowBackground)
+                .setBlurRadius(22f)
+                .setBlurAutoUpdate(true)
+
+            binding.blurPower
+                .setupWith(rootView, RenderScriptBlur(this))
+                .setFrameClearDrawable(windowBackground)
+                .setBlurRadius(18f)
+                .setBlurAutoUpdate(true)
+
+            binding.blurSettings
+                .setupWith(rootView, RenderScriptBlur(this))
+                .setFrameClearDrawable(windowBackground)
+                .setBlurRadius(18f)
+                .setBlurAutoUpdate(true)
+            
+            binding.blurMap
+                .setupWith(rootView, RenderScriptBlur(this))
+                .setFrameClearDrawable(windowBackground)
+                .setBlurRadius(18f)
+                .setBlurAutoUpdate(true)
+        } catch (e: Exception) {
+            // Keep the translucent glass fallback background
         }
     }
 
@@ -166,21 +210,24 @@ class MainActivity : AppCompatActivity(), AudioClassifierService.ServiceListener
     private fun updateUI(active: Boolean) {
         isProtectionActive = active
         
-        binding.waveformView.setActive(active)
+        binding.particleVisualizerView.setActive(active)
         
         if (active) {
             binding.tvStatus.text = getString(R.string.protection_active)
             binding.tvStatus.setTextColor(ContextCompat.getColor(this, R.color.safe_green))
             binding.tvStatusHint.text = getString(R.string.tap_to_stop)
-            binding.btnPower.text = "STOP"
-            binding.btnPower.setBackgroundColor(ContextCompat.getColor(this, R.color.button_active))
+            // Change FAB to stop icon (X or stop icon)
+            binding.btnPower.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
+            // Background is a glass blur view, so keep FAB transparent
+            binding.btnPower.backgroundTintList = ContextCompat.getColorStateList(this, android.R.color.transparent)
         } else {
             binding.tvStatus.text = getString(R.string.protection_inactive)
             binding.tvStatus.setTextColor(ContextCompat.getColor(this, R.color.inactive_gray))
             binding.tvStatusHint.text = getString(R.string.tap_to_start)
-            binding.btnPower.text = "START"
-            binding.btnPower.setBackgroundColor(ContextCompat.getColor(this, R.color.button_inactive))
-            binding.waveformView.setAmplitude(0f)
+            // Change FAB to record icon
+            binding.btnPower.setImageResource(android.R.drawable.ic_btn_speak_now)
+            binding.btnPower.backgroundTintList = ContextCompat.getColorStateList(this, android.R.color.transparent)
+            binding.particleVisualizerView.setAmplitude(0f)
         }
     }
 
@@ -194,7 +241,7 @@ class MainActivity : AppCompatActivity(), AudioClassifierService.ServiceListener
 
     override fun onAudioAmplitude(amplitude: Float) {
         runOnUiThread {
-            binding.waveformView.setAmplitude(amplitude)
+            binding.particleVisualizerView.setAmplitude(amplitude)
         }
     }
 
@@ -242,4 +289,3 @@ class MainActivity : AppCompatActivity(), AudioClassifierService.ServiceListener
         }
     }
 }
-

@@ -27,14 +27,29 @@ BeAware acts as an always-on safety layer that listens *for* you:
 
 | Urgency Level | Sounds Detected | Response |
 |---------------|-----------------|----------|
-| 🔴 **Level 1: Critical** | Sirens, Tire Screeches, Glass Breaking, Gunshots | Pauses music, SOS vibration, full-screen alert with 10-second countdown to SMS |
-| 🟠 **Level 2: Danger** | Shouting, Screaming, Running, Fighting | Ducks volume to 10%, pulse vibration, 30-second "Dead Man's Switch" countdown |
-| 🟡 **Level 3: Warning** | Car Horns, Bicycle Bells | Overlay ping sound without interrupting music |
+| 🔴 **Level 1: Critical** | Screaming, Shouting for Help, Physical Struggle, Glass Breaking, Gunshots | Music STOPS, continuous alert beeping (30 seconds), repeating vibration, full-screen alarm that wakes phone even when locked. 30-second countdown to emergency SMS if user doesn't tap "I'm Safe" |
+| 🟡 **Level 2: Caution** | Sirens, Car Horns, Vehicle Alarms, Emergency Vehicles | Music lowers to 10%, double ping sound, TTS announcement for sirens ("An ambulance is coming"), volume restores after 5 seconds. NO vibration |
+| 🟢 **Level 3: Awareness** | Bicycle Bells, Chimes, Bus Sounds, Dog Barking, Footsteps | Soft ping sound. TTS announcement ONLY for bells/chimes ("A bike is coming") with volume at 10% for 5 seconds. All other sounds just play ping. NO vibration |
 
 ### Emergency Features
-- **Automatic SMS** — Sends your location to emergency contact if you don't respond
-- **Dead Man's Switch** — Level 2 threats start audio recording if you don't confirm you're safe within 30 seconds
-- **Location Sharing** — Google Maps link included in all emergency SMS
+- **Automatic SMS** — Level 1 critical alerts send your location to emergency contact if you don't tap "I'm Safe" within 30 seconds
+- **Full-Screen Alarm** — Level 1 alerts wake your phone screen even when locked, like an alarm clock
+- **Location Sharing** — GPS coordinates included in emergency SMS
+- **Music Resume** — Music automatically resumes after alerts are dismissed
+
+### Voice Announcements (TTS)
+- **Customizable Categories** — Enable/disable TTS for specific sound types in Settings:
+  - 🚲 **Bells/Bikes** — "A bike is coming"
+  - 🚑 **Sirens/Emergencies** — "An ambulance is coming"
+  - 🚌 **Vehicles** — "A bus is arriving", "A train is approaching"
+  - 🔔 **General Awareness** — "Dog nearby", "Footsteps nearby", etc.
+- **Smart Volume Control** — Music automatically lowers to 10% during TTS announcements, then restores after 5 seconds
+- **Headphone Optimized** — TTS plays through music stream for clear audio through headphones
+
+### Danger Zone Map
+- **Community Safety Map** — View anonymous Level 1 critical alert locations on an interactive map
+- **OpenStreetMap Integration** — No API keys required, works offline
+- **Visual Indicators** — Red markers and danger zones show where critical incidents were detected
 
 ---
 
@@ -44,13 +59,15 @@ BeAware acts as an always-on safety layer that listens *for* you:
 
 1. **100% On-Device AI** — No cloud processing. Your audio never leaves your phone. Zero latency, maximum privacy.
 
-2. **Intelligent Urgency Routing** — Not all sounds deserve the same response. A car horn gets a subtle ping; a siren gets full media takeover.
+2. **Intelligent Urgency Routing** — Not all sounds deserve the same response. A bicycle bell gets a soft ping with optional TTS; a siren gets volume ducking and TTS; screaming gets full alarm takeover.
 
-3. **Dead Man's Switch** — If you can't respond to a danger alert, BeAware assumes the worst and activates emergency protocols automatically.
+3. **Smart TTS System** — Customizable voice announcements that only trigger for enabled categories, with automatic volume management.
 
-4. **Audio Hijacking** — Uses Android's AudioFocus API to *pause* or *duck* other apps (Spotify, YouTube, etc.) rather than just playing over them.
+4. **Audio Hijacking** — Uses Android's AudioFocus API to *pause* or *duck* other apps (Spotify, YouTube, etc.) rather than just playing over them. Music automatically resumes after alerts.
 
-5. **Context-Aware Alerts** — 5-second cooldown prevents alert fatigue from continuous sounds (like a passing fire truck).
+5. **Optimized Audio Processing** — 960ms audio chunks (YAMNet's optimal window), UNPROCESSED microphone source for better detection range, priority filtering to ignore speech/silence when critical sounds are detected.
+
+6. **Alarm-Style Critical Alerts** — Level 1 alerts wake your phone screen even when locked, ensuring you never miss a critical danger.
 
 ---
 
@@ -87,16 +104,21 @@ BeAware acts as an always-on safety layer that listens *for* you:
 |-----------|------------|-----------|
 | **Platform** | Native Android (Kotlin) | Direct hardware access for low-latency audio |
 | **AI Model** | YAMNet via MediaPipe | 521 sound classes, optimized for mobile, runs in ~50ms |
-| **Audio Capture** | AudioRecord API @ 16kHz | Matches YAMNet requirements, minimal battery impact |
-| **Media Control** | AudioFocus API | System-level integration to pause/duck other apps |
+| **Audio Capture** | AudioRecord API @ 16kHz, UNPROCESSED source | Matches YAMNet requirements, 960ms chunks for optimal accuracy, raw audio for better range |
+| **Media Control** | AudioFocus API | System-level integration to pause/duck other apps, automatic music resume |
+| **Text-to-Speech** | Android TTS Engine | Customizable voice announcements with volume ducking |
 | **Background Processing** | Foreground Service | Ensures continuous monitoring even when screen locked |
+| **Mapping** | OSMDroid (OpenStreetMap) | Offline-capable maps for danger zone visualization, no API keys required |
+| **UI Effects** | BlurView, Custom Views | Glass/blur effects, 3D particle audio visualizer, liquid blur overlay |
 
 ### Main Challenges Solved
 
-1. **Real-time Classification** — Achieved <500ms detection-to-alert latency using optimized TFLite inference
+1. **Real-time Classification** — Achieved <500ms detection-to-alert latency using optimized TFLite inference with 960ms audio chunks
 2. **Battery Efficiency** — Foreground service with efficient audio buffering keeps drain under 5%/hour
-3. **False Positive Reduction** — 0.6 confidence threshold + 5-second cooldown per category
-4. **Lock Screen Alerts** — SYSTEM_ALERT_WINDOW permission + FLAG_SHOW_WHEN_LOCKED
+3. **False Positive Reduction** — Priority filtering ignores speech/silence when critical sounds detected, confidence thresholds per category (0.25 for sirens, 0.60 for speech)
+4. **Lock Screen Alerts** — Full-screen intent notifications with WAKE_LOCK to wake phone like an alarm, even when locked
+5. **Audio Range** — UNPROCESSED microphone source disables automatic gain control and noise suppression, increasing detection range from ~5m to ~15m+
+6. **TTS Volume Management** — Automatic volume ducking to 10% during announcements, restoration after 5 seconds, works even when screen is off
 
 ### Overall Functionality
 
@@ -108,21 +130,23 @@ BeAware acts as an always-on safety layer that listens *for* you:
 │  📱 Phone Microphone                                        │
 │         │                                                   │
 │         ▼                                                   │
-│  🎙️ AudioRecord (16kHz, 1-sec chunks)                       │
+│  🎙️ AudioRecord (16kHz, 960ms chunks, UNPROCESSED source)  │
 │         │                                                   │
 │         ▼                                                   │
 │  🧠 YAMNet Classification (on-device)                       │
 │         │                                                   │
 │         ▼                                                   │
-│  🎯 Urgency Mapper (521 classes → 3 levels)                 │
+│  🎯 Priority Filter + Urgency Mapper (521 classes → 3 levels)│
 │         │                                                   │
 │    ┌────┴────┬────────────┐                                 │
 │    ▼         ▼            ▼                                 │
-│  🔴 L1    🟠 L2       🟡 L3                                  │
-│  Pause    Duck        Ping                                  │
-│  + SOS    + Pulse     + Toast                               │
-│  + Alert  + Dead Man  (no interrupt)                        │
-│           + Record                                          │
+│  🔴 L1    🟡 L2       🟢 L3                                  │
+│  STOP    Duck 10%    Ping                                  │
+│  + Beep  + Ping      + TTS (bells only)                    │
+│  + Vib   + TTS       + Duck 10% (bells only)                │
+│  + Alarm (sirens)    + Restore 5s                           │
+│  + SMS   + Restore 5s                                       │
+│  (30s)   (NO vib)    (NO vib)                              │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -136,10 +160,12 @@ BeAware acts as an always-on safety layer that listens *for* you:
 | **Language** | Kotlin |
 | **Platform** | Android SDK 26+ (Android 8.0 Oreo) |
 | **AI/ML** | TensorFlow Lite, Google MediaPipe Audio Classifier, YAMNet |
-| **Audio** | AudioRecord API, AudioManager, SoundPool |
+| **Audio** | AudioRecord API, AudioManager, ToneGenerator, TextToSpeech |
 | **Location** | Google Play Services FusedLocationProviderClient |
 | **Communication** | Android SmsManager |
-| **UI** | Material Design 3, ConstraintLayout, Custom Views |
+| **UI** | Material Design 3, ConstraintLayout, Custom Views (ParticleVisualizerView, LiquidOverlayView) |
+| **Maps** | OSMDroid (OpenStreetMap) |
+| **Effects** | BlurView library for glass/blur effects |
 | **Background** | Android Foreground Service |
 
 ---
@@ -162,10 +188,15 @@ BeAware acts as an always-on safety layer that listens *for* you:
 
 To test BeAware:
 1. Install the APK on an Android 8.0+ device
-2. Grant microphone, SMS, and location permissions
+2. Grant microphone, SMS, location, and notification permissions
 3. Set your emergency contact in Settings
-4. Tap the toggle to activate protection
-5. Play siren/horn sounds from another device to trigger alerts
+4. Configure TTS preferences (enable/disable categories)
+5. Tap the power button (center) to activate protection
+6. Test alerts:
+   - **Level 1**: Play screaming/shouting sounds → Full alarm with continuous beeping
+   - **Level 2**: Play siren sounds → Double ping + "An ambulance is coming" (volume at 10%)
+   - **Level 3**: Play bell/chime sounds → "A bike is coming" (volume at 10%)
+7. View danger zones on the map (left button)
 
 ---
 
@@ -193,14 +224,14 @@ git clone https://github.com/trajnovd/BeAware.git
 BeAware/
 ├── app/src/main/
 │   ├── java/com/beaware/app/
-│   │   ├── service/        # Foreground service for audio monitoring
-│   │   ├── audio/          # Audio capture, classification, urgency mapping
-│   │   ├── alert/          # Alert routing, AudioFocus, haptics
-│   │   ├── ui/             # Activities and custom views
-│   │   ├── emergency/      # SMS, location, audio recording
-│   │   └── data/           # SharedPreferences manager
-│   ├── res/                # Layouts, colors, strings, drawables
-│   └── assets/             # YAMNet TFLite model
+│   │   ├── service/        # AudioClassifierService - Foreground service for continuous monitoring
+│   │   ├── audio/          # AudioClassifier, SoundClassification, UrgencyLevel
+│   │   ├── alert/          # AlertManager - TTS, vibration, audio focus, volume control
+│   │   ├── ui/             # MainActivity, SettingsActivity, MapActivity, AlertOverlayActivity
+│   │   │                   # ParticleVisualizerView, LiquidOverlayView
+│   │   └── data/           # PreferencesManager - User settings and TTS preferences
+│   ├── res/                # Layouts, colors, strings, drawables, themes
+│   └── assets/             # yamnet.tflite model
 ├── tasks/                  # PRD and task tracking
 └── README.md
 ```

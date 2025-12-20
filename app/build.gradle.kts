@@ -48,11 +48,17 @@ dependencies {
     // UI
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
+
+    // Glass/blur UI
+    implementation("com.github.Dimezis:BlurView:version-2.0.4")
     
     // MediaPipe Audio Classifier (YAMNet)
     implementation(libs.mediapipe.tasks.audio)
     
     // Google Play Services Location
     implementation(libs.play.services.location)
+    
+    // OpenStreetMap (OSMDroid) - API-key-free mapping
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
 }
 
