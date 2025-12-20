@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Colors -->
+    <color name="primary">#1A1A2E</color>
+    <color name="primary_dark">#0F0F1A</color>
+    <color name="accent">#E94560</color>
+    
+    <!-- Alert Colors -->
+    <color name="alert_red">#FF0000</color>
+    <color name="alert_red_dark">#CC0000</color>
+    <color name="alert_orange">#FF6B00</color>
+    <color name="alert_yellow">#FFD700</color>
+    <color name="alert_black">#000000</color>
+    
+    <!-- Status Colors -->
+    <color name="safe_green">#00C853</color>
+    <color name="inactive_gray">#666666</color>
+    
+    <!-- UI Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="off_white">#F5F5F5</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B0B0</color>
+    
+    <!-- Waveform Colors -->
+    <color name="waveform_active">#E94560</color>
+    <color name="waveform_inactive">#333333</color>
+    
+    <!-- Button Colors -->
+    <color name="button_active">#E94560</color>
+    <color name="button_inactive">#333333</color>
+    <color name="button_safe">#00C853</color>
+</resources>
+

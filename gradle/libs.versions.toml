@@ -1,0 +1,26 @@
+[versions]
+agp = "8.5.0"
+kotlin = "1.9.24"
+coreKtx = "1.13.1"
+lifecycleRuntimeKtx = "2.8.3"
+activityKtx = "1.9.0"
+appcompat = "1.7.0"
+material = "1.12.0"
+constraintlayout = "2.1.4"
+mediapipeAudio = "0.10.14"
+playServicesLocation = "21.3.0"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+mediapipe-tasks-audio = { group = "com.google.mediapipe", name = "tasks-audio", version.ref = "mediapipeAudio" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+

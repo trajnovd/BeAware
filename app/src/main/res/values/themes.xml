@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme -->
+    <style name="Theme.BeAware" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:navigationBarColor">@color/primary_dark</item>
+        <item name="android:windowBackground">@color/primary</item>
+    </style>
+
+    <!-- Alert Overlay Theme - fullscreen, shows over lock screen -->
+    <style name="Theme.BeAware.Overlay" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@color/alert_black</item>
+        <item name="android:statusBarColor">@color/alert_black</item>
+        <item name="android:navigationBarColor">@color/alert_black</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowShowWhenLocked">true</item>
+        <item name="android:windowTurnScreenOn">true</item>
+    </style>
+</resources>
+

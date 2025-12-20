@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Audio Recording -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    
+    <!-- Foreground Service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    
+    <!-- Notifications -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    
+    <!-- Haptic Feedback -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    
+    <!-- Emergency SMS -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    
+    <!-- Location for Emergency SMS -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
+    <!-- Overlay for Alert Screen -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application
+        android:name=".BeAwareApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.BeAware"
+        tools:targetApi="31">
+        
+        <!-- Main Activity -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.BeAware">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <!-- Settings Activity -->
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.BeAware" />
+        
+        <!-- Alert Overlay Activity -->
+        <activity
+            android:name=".ui.AlertOverlayActivity"
+            android:exported="false"
+            android:theme="@style/Theme.BeAware.Overlay"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"
+            android:launchMode="singleTop" />
+        
+        <!-- Audio Classifier Foreground Service -->
+        <service
+            android:name=".service.AudioClassifierService"
+            android:foregroundServiceType="microphone"
+            android:exported="false" />
+
+    </application>
+
+</manifest>
+
