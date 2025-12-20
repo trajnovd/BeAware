@@ -17,8 +17,7 @@
         <item name="android:statusBarColor">@color/alert_black</item>
         <item name="android:navigationBarColor">@color/alert_black</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowShowWhenLocked">true</item>
-        <item name="android:windowTurnScreenOn">true</item>
+
     </style>
 </resources>
 

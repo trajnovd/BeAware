@@ -14,6 +14,7 @@ class PreferencesManager(context: Context) {
         private const val KEY_EMERGENCY_CONTACT = "emergency_contact"
         private const val KEY_PROTECTION_ENABLED = "protection_enabled"
         private const val KEY_FIRST_LAUNCH = "first_launch"
+        private const val KEY_USE_SPEECH = "use_speech_announcements"
     }
 
     private val prefs: SharedPreferences = 
@@ -42,6 +43,16 @@ class PreferencesManager(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_FIRST_LAUNCH, value).apply()
 
     /**
+     * Use speech announcements for Level 3 (AWARENESS) alerts
+     * If true: "A bike is coming", "A bus is coming", etc.
+     * If false: Just play a ping sound
+     * Default: true (speech enabled)
+     */
+    var useSpeechAnnouncements: Boolean
+        get() = prefs.getBoolean(KEY_USE_SPEECH, true)
+        set(value) = prefs.edit().putBoolean(KEY_USE_SPEECH, value).apply()
+
+    /**
      * Check if emergency contact has been configured
      */
     fun hasEmergencyContact(): Boolean {
@@ -55,4 +66,3 @@ class PreferencesManager(context: Context) {
         prefs.edit().clear().apply()
     }
 }
-

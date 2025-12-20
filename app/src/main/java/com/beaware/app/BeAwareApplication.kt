@@ -3,6 +3,7 @@ package com.beaware.app
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.media.AudioAttributes
 import android.os.Build
 
 /**
@@ -32,15 +33,27 @@ class BeAwareApplication : Application() {
             setShowBadge(false)
         }
 
-        // Alert Channel (high importance - for danger notifications)
+        // Alert Channel (HIGH importance - for danger notifications with ALARM behavior)
         val alertChannel = NotificationChannel(
             CHANNEL_ID_ALERTS,
             "Danger Alerts",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = "Critical alerts when danger is detected"
+            description = "Critical alerts when danger is detected - wakes screen like an alarm"
             enableVibration(true)
+            vibrationPattern = longArrayOf(0, 400, 200, 400, 200, 400)
             setShowBadge(true)
+            lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
+            setBypassDnd(true) // Bypass Do Not Disturb
+            
+            // Set audio attributes for alarm-like behavior
+            setSound(
+                null, // We handle sound separately via ToneGenerator
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+            )
         }
 
         val notificationManager = getSystemService(NotificationManager::class.java)
@@ -48,4 +61,3 @@ class BeAwareApplication : Application() {
         notificationManager.createNotificationChannel(alertChannel)
     }
 }
-

@@ -31,7 +31,7 @@
 - `app/src/main/java/com/beaware/app/audio/SoundClassifier.kt` - YAMNet/MediaPipe integration and inference
 - `app/src/main/java/com/beaware/app/audio/UrgencyMapper.kt` - Maps YAMNet classes to Level 1/2/3
 - `app/src/main/java/com/beaware/app/audio/CooldownManager.kt` - 5-second refractory period logic
-- `app/src/main/assets/yamnet.tflite` - YAMNet TensorFlow Lite model file
+- `app/src/main/assets/yamnet.tflite` - ✅ YAMNet TensorFlow Lite model file
 
 ### Alert Response System
 
@@ -83,13 +83,13 @@
 
 ## Tasks
 
-- [ ] 1.0 Project Setup & Core Infrastructure _(6/7 sub-tasks complete - YAMNet model pending)_
+- [x] 1.0 Project Setup & Core Infrastructure ✅
 
   - [x] 1.1 Create new Android project in Android Studio with Kotlin, minimum SDK 26, package name `com.beaware.app`
   - [x] 1.2 Configure `build.gradle.kts` with dependencies: MediaPipe Tasks Audio (`com.google.mediapipe:tasks-audio`), Google Play Services Location
   - [x] 1.3 Add all required permissions to `AndroidManifest.xml`: RECORD_AUDIO, FOREGROUND_SERVICE, FOREGROUND_SERVICE_MICROPHONE, POST_NOTIFICATIONS, VIBRATE, SEND_SMS, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, SYSTEM_ALERT_WINDOW
   - [x] 1.4 Create package structure: `service/`, `audio/`, `alert/`, `ui/`, `emergency/`, `data/`
-  - [ ] 1.5 Download YAMNet TFLite model from TensorFlow Hub and place in `app/src/main/assets/` _(placeholder created, model to be added manually)_
+  - [x] 1.5 Download YAMNet TFLite model from TensorFlow Hub and place in `app/src/main/assets/`
   - [x] 1.6 Create `BeAwareApplication.kt` application class and register in manifest
   - [x] 1.7 Create `PreferencesManager.kt` for storing emergency contact phone number using SharedPreferences
 

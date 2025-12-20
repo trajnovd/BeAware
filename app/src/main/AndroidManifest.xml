@@ -24,6 +24,15 @@
     
     <!-- Overlay for Alert Screen -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    
+    <!-- Wake Lock for Alarm-like Behavior -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    
+    <!-- Full Screen Intent for Alarm (Android 10+) -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
+    <!-- Allows adjusting device stream volume (normal permission, auto-granted) -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:name=".BeAwareApplication"
