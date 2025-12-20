@@ -205,15 +205,4 @@ BeAware/
 └── README.md
 ```
 
----
-
-## Team
-
-Built with ❤️ for **[Hackathon Name]** in 36 hours.
-
----
-
-## License
-
-MIT License — See [LICENSE](LICENSE) for details.
 
