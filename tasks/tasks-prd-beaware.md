@@ -1,18 +1,31 @@
 # Task List: BeAware MVP
 
 **Generated from:** `prd-beaware.md`  
-**Timeline:** 36-Hour Hackathon Build  
+**Timeline:** 36-Hour Hackathon Build
 
 ---
 
 ## Relevant Files
 
+### Project Root
+
+- `settings.gradle.kts` - ✅ Project settings and module includes
+- `build.gradle.kts` - ✅ Root build configuration
+- `gradle.properties` - ✅ Gradle JVM and Android settings
+- `gradle/libs.versions.toml` - ✅ Version catalog for dependencies
+- `gradle/wrapper/gradle-wrapper.properties` - ✅ Gradle wrapper configuration
+- `gradlew` - ✅ Gradle wrapper script (executable)
+- `.gitignore` - ✅ Git ignore rules for Android project
+- `README.md` - ✅ Project documentation with hackathon structure
+
 ### Core Application
-- `app/build.gradle.kts` - Gradle dependencies (MediaPipe, TensorFlow Lite, Location Services)
-- `app/src/main/AndroidManifest.xml` - Permissions and service declarations
-- `app/src/main/java/com/beaware/app/BeAwareApplication.kt` - Application class for global initialization
+
+- `app/build.gradle.kts` - ✅ Gradle dependencies (MediaPipe, TensorFlow Lite, Location Services)
+- `app/src/main/AndroidManifest.xml` - ✅ Permissions and service declarations
+- `app/src/main/java/com/beaware/app/BeAwareApplication.kt` - ✅ Application class for global initialization
 
 ### Audio Detection Engine
+
 - `app/src/main/java/com/beaware/app/service/AudioClassifierService.kt` - Foreground service for continuous audio monitoring
 - `app/src/main/java/com/beaware/app/audio/AudioRecorder.kt` - Microphone capture wrapper (16kHz)
 - `app/src/main/java/com/beaware/app/audio/SoundClassifier.kt` - YAMNet/MediaPipe integration and inference
@@ -21,6 +34,7 @@
 - `app/src/main/assets/yamnet.tflite` - YAMNet TensorFlow Lite model file
 
 ### Alert Response System
+
 - `app/src/main/java/com/beaware/app/alert/AlertManager.kt` - Central alert routing and orchestration
 - `app/src/main/java/com/beaware/app/alert/AudioFocusController.kt` - AudioManager focus handling (pause/duck)
 - `app/src/main/java/com/beaware/app/alert/HapticController.kt` - Vibration patterns (SOS, Pulse)
@@ -28,6 +42,7 @@
 - `app/src/main/res/raw/ping_alert.mp3` - Alert ping sound file
 
 ### User Interface
+
 - `app/src/main/java/com/beaware/app/ui/MainActivity.kt` - Home screen with toggle and waveform
 - `app/src/main/java/com/beaware/app/ui/SettingsActivity.kt` - Emergency contact configuration
 - `app/src/main/java/com/beaware/app/ui/AlertOverlayActivity.kt` - Full-screen alert with countdown
@@ -37,18 +52,24 @@
 - `app/src/main/res/layout/activity_alert_overlay.xml` - Alert overlay layout
 
 ### Emergency Features
+
 - `app/src/main/java/com/beaware/app/emergency/LocationProvider.kt` - FusedLocationProviderClient wrapper
 - `app/src/main/java/com/beaware/app/emergency/SmsSender.kt` - SMS sending with location link
 - `app/src/main/java/com/beaware/app/emergency/AudioRecorderEmergency.kt` - Emergency audio recording to local storage
 - `app/src/main/java/com/beaware/app/emergency/CountdownTimer.kt` - Countdown logic for Level 1/2 alerts
 
 ### Data & Preferences
-- `app/src/main/java/com/beaware/app/data/PreferencesManager.kt` - SharedPreferences for emergency contact storage
+
+- `app/src/main/java/com/beaware/app/data/PreferencesManager.kt` - ✅ SharedPreferences for emergency contact storage
 
 ### Resources
-- `app/src/main/res/values/strings.xml` - String resources
-- `app/src/main/res/values/colors.xml` - Color definitions (alert red, black, etc.)
-- `app/src/main/res/drawable/` - Icons and drawable resources
+
+- `app/src/main/res/values/strings.xml` - ✅ String resources
+- `app/src/main/res/values/colors.xml` - ✅ Color definitions (alert red, black, etc.)
+- `app/src/main/res/values/themes.xml` - ✅ App themes (dark theme, alert overlay theme)
+- `app/src/main/res/drawable/ic_launcher_foreground.xml` - ✅ App icon (shield with eye)
+- `app/src/main/res/mipmap-hdpi/ic_launcher.xml` - ✅ Launcher icon
+- `app/proguard-rules.pro` - ✅ ProGuard rules for MediaPipe
 
 ### Notes
 
@@ -62,16 +83,18 @@
 
 ## Tasks
 
-- [ ] 1.0 Project Setup & Core Infrastructure
-  - [ ] 1.1 Create new Android project in Android Studio with Kotlin, minimum SDK 26, package name `com.beaware.app`
-  - [ ] 1.2 Configure `build.gradle.kts` with dependencies: MediaPipe Tasks Audio (`com.google.mediapipe:tasks-audio`), Google Play Services Location
-  - [ ] 1.3 Add all required permissions to `AndroidManifest.xml`: RECORD_AUDIO, FOREGROUND_SERVICE, FOREGROUND_SERVICE_MICROPHONE, POST_NOTIFICATIONS, VIBRATE, SEND_SMS, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, SYSTEM_ALERT_WINDOW
-  - [ ] 1.4 Create package structure: `service/`, `audio/`, `alert/`, `ui/`, `emergency/`, `data/`
-  - [ ] 1.5 Download YAMNet TFLite model from TensorFlow Hub and place in `app/src/main/assets/`
-  - [ ] 1.6 Create `BeAwareApplication.kt` application class and register in manifest
-  - [ ] 1.7 Create `PreferencesManager.kt` for storing emergency contact phone number using SharedPreferences
+- [ ] 1.0 Project Setup & Core Infrastructure _(6/7 sub-tasks complete - YAMNet model pending)_
+
+  - [x] 1.1 Create new Android project in Android Studio with Kotlin, minimum SDK 26, package name `com.beaware.app`
+  - [x] 1.2 Configure `build.gradle.kts` with dependencies: MediaPipe Tasks Audio (`com.google.mediapipe:tasks-audio`), Google Play Services Location
+  - [x] 1.3 Add all required permissions to `AndroidManifest.xml`: RECORD_AUDIO, FOREGROUND_SERVICE, FOREGROUND_SERVICE_MICROPHONE, POST_NOTIFICATIONS, VIBRATE, SEND_SMS, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, SYSTEM_ALERT_WINDOW
+  - [x] 1.4 Create package structure: `service/`, `audio/`, `alert/`, `ui/`, `emergency/`, `data/`
+  - [ ] 1.5 Download YAMNet TFLite model from TensorFlow Hub and place in `app/src/main/assets/` _(placeholder created, model to be added manually)_
+  - [x] 1.6 Create `BeAwareApplication.kt` application class and register in manifest
+  - [x] 1.7 Create `PreferencesManager.kt` for storing emergency contact phone number using SharedPreferences
 
 - [ ] 2.0 Audio Detection Engine (Foreground Service + YAMNet)
+
   - [ ] 2.1 Create `AudioClassifierService.kt` extending Service with `START_STICKY` return
   - [ ] 2.2 Implement `startForeground()` with persistent notification showing "BeAware: Protection Active 🛡️"
   - [ ] 2.3 Add "Stop Protection" action button to notification that calls `stopSelf()`
@@ -85,6 +108,7 @@
   - [ ] 2.11 Implement `shouldTrigger(category: String): Boolean` that returns false if <5 seconds since last trigger
 
 - [ ] 3.0 Alert Response System (AudioFocus, Haptics, Urgency Routing)
+
   - [ ] 3.1 Create `AlertManager.kt` singleton that receives urgency events from the service
   - [ ] 3.2 Create `AudioFocusController.kt` with methods `requestFocusPause()` (AUDIOFOCUS_GAIN_TRANSIENT) and `requestFocusDuck()` (AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
   - [ ] 3.3 Implement `abandonFocus()` method to release audio focus when alert is dismissed
@@ -98,6 +122,7 @@
   - [ ] 3.11 Create broadcast mechanism (LocalBroadcastManager or EventBus) to communicate alerts from service to UI
 
 - [ ] 4.0 User Interface (Home, Settings, Alert Overlay)
+
   - [ ] 4.1 Create `activity_main.xml` layout with: app title, waveform container, large circular toggle button, status text, settings button
   - [ ] 4.2 Implement `MainActivity.kt` with toggle button that starts/stops `AudioClassifierService`
   - [ ] 4.3 Create `WaveformView.kt` custom View that visualizes audio amplitude in real-time
@@ -114,6 +139,7 @@
   - [ ] 4.14 Define color resources in `colors.xml`: alert_red (#FF0000), alert_black (#000000), safe_green (#00FF00)
 
 - [ ] 5.0 Emergency Features (SMS, Location, Audio Recording, Dead Man's Switch)
+
   - [ ] 5.1 Create `LocationProvider.kt` using FusedLocationProviderClient
   - [ ] 5.2 Implement `getCurrentLocation(callback: (Location?) -> Unit)` with timeout fallback
   - [ ] 5.3 Generate Google Maps link format: `https://maps.google.com/?q={lat},{lng}`
@@ -144,4 +170,3 @@
   - [ ] 6.10 Add app icon and splash screen (optional polish)
   - [ ] 6.11 Prepare demo script: show home screen → activate → play test sound → show alert → demonstrate SMS
   - [ ] 6.12 Final bug fixes and edge case handling
-
