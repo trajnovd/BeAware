@@ -80,7 +80,6 @@ BeAware acts as an always-on safety layer that listens *for* you:
 - **Runners & Joggers** — Athletes exercising outdoors with music
 - **Cyclists** — Riders who use bone-conduction or traditional headphones
 - **Late-Night Walkers** — Anyone navigating potentially unsafe areas after dark
-- **Hearing Impaired** — Users who may already struggle to hear environmental sounds
 
 ### Real-World Application
 
@@ -90,7 +89,6 @@ BeAware acts as an always-on safety layer that listens *for* you:
 
 ### Expansion Potential
 
-- iOS version
 - Smartwatch companion app with haptic alerts
 - Integration with smart hearing aids
 - Custom sound training for specific environments (construction sites, factories)
