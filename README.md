@@ -177,7 +177,7 @@ Noise-canceling headphones create a dangerous "audio bubble" that lowers awarene
 
 ### Demo Video
 
-🎬 **[Watch Demo Video](#)** *(link coming soon)*
+🎬 **[Watch Demo Video](https://drive.google.com/file/d/131Y-C9bBF9jsdMXZRB8KUBcvG-wrDduQ/view?usp=sharing)**
 
 ### Live Demo
 
