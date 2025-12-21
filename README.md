@@ -20,36 +20,34 @@ Noise-canceling headphones create a dangerous "audio bubble" that lowers awarene
 
 ---
 
-## Solution
-
-BeAware acts as an always-on safety layer that listens *for* you:
+## Our Solution - BeAware
 
 ### Core Features
 
 | Urgency Level | Sounds Detected | Response |
 |---------------|-----------------|----------|
-| 🔴 **Level 1: Critical** | Screaming, Shouting for Help, Physical Struggle, Glass Breaking, Gunshots | Music STOPS, continuous alert beeping (30 seconds), repeating vibration, full-screen alarm that wakes phone even when locked. 30-second countdown to emergency SMS if user doesn't tap "I'm Safe" |
-| 🟡 **Level 2: Caution** | Sirens, Car Horns, Vehicle Alarms, Emergency Vehicles | Music lowers to 10%, double ping sound, TTS announcement for sirens ("An ambulance is coming"), volume restores after 5 seconds. NO vibration |
-| 🟢 **Level 3: Awareness** | Bicycle Bells, Chimes, Bus Sounds, Dog Barking, Footsteps | Soft ping sound. TTS announcement ONLY for bells/chimes ("A bike is coming") with volume at 10% for 5 seconds. All other sounds just play ping. NO vibration |
+| 🔴 **Level 1: Critical** | Screams, Shouts for Help, Physical Struggle, Glass Breaking, Gunshots | Music stops, continuous alert beeping (30 seconds), repeating vibration, full-screen alarm that wakes phone even when locked. 30-second countdown to emergency SMS if user doesn't tap "I'm Safe" |
+| 🟡 **Level 2: Caution** | Sirens, Car Horns, Vehicle Alarms, Emergency Vehicles | Music lowers to 10%, double ping sound, Voice announcement according to the detected sound ("An ambulance is coming"), volume restores after 5 seconds. |
+| 🟢 **Level 3: Awareness** | Bicycle Bells, Chimes, Bus Sounds, Dog Barking, Footsteps | Soft ping sound. Voice announcement only for bells/chimes ("A bike is coming") with volume at 10% for 5 seconds. All other sounds just play ping. |
 
 ### Emergency Features
-- **Automatic SMS** — Level 1 critical alerts send your location to emergency contact if you don't tap "I'm Safe" within 30 seconds
-- **Full-Screen Alarm** — Level 1 alerts wake your phone screen even when locked, like an alarm clock
-- **Location Sharing** — GPS coordinates included in emergency SMS
+- **Automatic SMS** — Level 1 critical alerts send the location to emergency contact if "I'm Safe" isn't pressed within 30 seconds
+- **Full-Screen Alarm** — Level 1 alerts wake the phone screen even when locked, like an alarm clock
+- **Location Sharing** — GPS coordinates are included in emergency SMS
 - **Music Resume** — Music automatically resumes after alerts are dismissed
 
-### Voice Announcements (TTS)
-- **Customizable Categories** — Enable/disable TTS for specific sound types in Settings:
-  - 🚲 **Bells/Bikes** — "A bike is coming"
-  - 🚑 **Sirens/Emergencies** — "An ambulance is coming"
-  - 🚌 **Vehicles** — "A bus is arriving", "A train is approaching"
-  - 🔔 **General Awareness** — "Dog nearby", "Footsteps nearby", etc.
-- **Smart Volume Control** — Music automatically lowers to 10% during TTS announcements, then restores after 5 seconds
-- **Headphone Optimized** — TTS plays through music stream for clear audio through headphones
+### Voice Announcement and Quality of Life
+- **Customizable Categories** — The user can enable/disable Voice announcements for specific sound types in Settings:
+  - **Bells/Bikes** — "A bike is coming"
+  - **Sirens/Emergencies** — "An ambulance is coming"
+  - **Vehicles** — "A bus is arriving", "A train is approaching"
+  - **General Awareness** — "Dog nearby", "Footsteps nearby", etc.
+- **Smart Volume Control** — Music automatically lowers to 10% during Voice announcements, then restores after 5 seconds
+- **Headphone Optimized** — Voice announcements play through music stream for clear audio through headphones
 
-### Danger Zone Map
-- **Community Safety Map** — View anonymous Level 1 critical alert locations on an interactive map
-- **OpenStreetMap Integration** — No API keys required, works offline
+### Users remain informed using the Danger Zone Map
+- **Community Safety Map** — Users can view anonymous Level 1 critical alert locations on an interactive map
+- **OpenStreetMap Integration** — No API keys required and works offline
 - **Visual Indicators** — Red markers and danger zones show where critical incidents were detected
 
 ---
