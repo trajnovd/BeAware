@@ -4,8 +4,6 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import com.beaware.app.R
 import com.beaware.app.databinding.ActivityMapBinding
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -21,44 +19,51 @@ class MapActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMapBinding
 
-    // Dummy data: Level 1 critical alert locations
+    // Dummy data: High alert zones with two awareness levels
     // In a real app, this would come from a backend or local database
     private val dummyDangerZones = listOf(
         DangerZone(
             location = GeoPoint(41.9981, 21.4254), // Skopje, North Macedonia (central)
             title = "Critical Alert",
-            description = "Screaming detected - 2 days ago"
+            description = "Emergency siren detected - 2 minutes ago",
+            type = ZoneType.CRITICAL
         ),
         DangerZone(
             location = GeoPoint(42.0042, 21.4094), // Near City Park
-            title = "Critical Alert",
-            description = "Glass breaking + voices - 5 days ago"
+            title = "Caution Zone",
+            description = "Heavy traffic area - be alert",
+            type = ZoneType.CAUTION
         ),
         DangerZone(
             location = GeoPoint(41.9945, 21.4312), // Near old bazaar
-            title = "Critical Alert",
-            description = "Aggressive shouting - 1 week ago"
+            title = "Caution Zone",
+            description = "Busy pedestrian crossing - 1 week ago",
+            type = ZoneType.CAUTION
         ),
         DangerZone(
             location = GeoPoint(42.0034, 21.4452), // East area
             title = "Critical Alert",
-            description = "Physical struggle sounds - 3 days ago"
+            description = "Ambulance siren - 3 days ago",
+            type = ZoneType.CRITICAL
         ),
         DangerZone(
             location = GeoPoint(41.9912, 21.4178), // South area
-            title = "Critical Alert",
-            description = "Shouting for help - 4 days ago"
+            title = "Caution Zone",
+            description = "High traffic intersection - 4 days ago",
+            type = ZoneType.CAUTION
         ),
         // Additional zones to show clustering
         DangerZone(
             location = GeoPoint(42.0012, 21.4234),
-            title = "Critical Alert",
-            description = "Running + shouting - 6 days ago"
+            title = "Caution Zone",
+            description = "Bike crossing - 6 days ago",
+            type = ZoneType.CAUTION
         ),
         DangerZone(
             location = GeoPoint(41.9978, 21.4289),
             title = "Critical Alert",
-            description = "Screaming detected - 1 week ago"
+            description = "Fire truck siren - 1 week ago",
+            type = ZoneType.CRITICAL
         )
     )
 
@@ -98,38 +103,54 @@ class MapActivity : AppCompatActivity() {
 
     private fun addDangerZones() {
         for (zone in dummyDangerZones) {
-            // Add marker
+            // Get color based on zone type
+            val zoneColor = when (zone.type) {
+                ZoneType.CRITICAL -> Color.argb(80, 255, 82, 82) // Red for critical zones
+                ZoneType.CAUTION -> Color.argb(80, 255, 193, 7) // Yellow for caution zones
+            }
+
+            val outlineColor = when (zone.type) {
+                ZoneType.CRITICAL -> Color.argb(200, 255, 82, 82)
+                ZoneType.CAUTION -> Color.argb(200, 255, 193, 7)
+            }
+
+            // Add larger circle overlay around danger zone (200m radius for better visibility)
+            val dangerCircle = Polygon().apply {
+                points = Polygon.pointsAsCircle(zone.location, 200.0) // 200 meter radius
+                fillPaint.color = zoneColor
+                outlinePaint.color = outlineColor
+                outlinePaint.strokeWidth = 4f
+            }
+            binding.mapView.overlays.add(dangerCircle)
+
+            // Add center marker with icon
             val marker = Marker(binding.mapView).apply {
                 position = zone.location
-                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
                 title = zone.title
                 snippet = zone.description
                 
-                // Custom red marker icon
-                icon = createDangerMarkerDrawable()
+                // Custom marker icon based on zone type
+                icon = createZoneMarkerDrawable(zone.type)
             }
             binding.mapView.overlays.add(marker)
-            
-            // Add red circle overlay around danger zone
-            val dangerCircle = Polygon().apply {
-                points = Polygon.pointsAsCircle(zone.location, 100.0) // 100 meter radius
-                fillPaint.color = Color.argb(60, 255, 0, 0) // Semi-transparent red
-                outlinePaint.color = Color.argb(150, 255, 0, 0)
-                outlinePaint.strokeWidth = 3f
-            }
-            binding.mapView.overlays.add(dangerCircle)
         }
         
         binding.mapView.invalidate()
     }
 
-    private fun createDangerMarkerDrawable(): android.graphics.drawable.Drawable {
-        val size = (24 * resources.displayMetrics.density).toInt()
+    private fun createZoneMarkerDrawable(zoneType: ZoneType): android.graphics.drawable.Drawable {
+        val size = (32 * resources.displayMetrics.density).toInt()
+        val color = when (zoneType) {
+            ZoneType.CRITICAL -> Color.rgb(255, 82, 82) // Red
+            ZoneType.CAUTION -> Color.rgb(255, 193, 7) // Yellow
+        }
+
         val drawable = GradientDrawable().apply {
             shape = GradientDrawable.OVAL
-            setColor(ContextCompat.getColor(this@MapActivity, R.color.alert_red))
+            setColor(color)
             setStroke(
-                (2 * resources.displayMetrics.density).toInt(),
+                (3 * resources.displayMetrics.density).toInt(),
                 Color.WHITE
             )
             setSize(size, size)
@@ -148,12 +169,21 @@ class MapActivity : AppCompatActivity() {
     }
 
     /**
+     * Enum representing different types of awareness zones
+     */
+    enum class ZoneType {
+        CRITICAL,  // Headphones OFF always (red)
+        CAUTION    // Headphones OK but be cautious (yellow)
+    }
+
+    /**
      * Data class representing a danger zone location
      */
     data class DangerZone(
         val location: GeoPoint,
         val title: String,
-        val description: String
+        val description: String,
+        val type: ZoneType
     )
 }
 

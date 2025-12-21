@@ -58,17 +58,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvSubtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="🛡️ Your Audio Guardian"
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
     <!-- Particle Visualizer Container (circular) -->
     <com.google.android.material.card.MaterialCardView
@@ -76,19 +65,19 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
-        app:cardBackgroundColor="@android:color/transparent"
+        app:cardBackgroundColor="#34000000"
         app:cardCornerRadius="999dp"
         app:cardElevation="0dp"
         app:strokeColor="#22FFFFFF"
-        app:strokeWidth="1dp"
+        app:strokeWidth="5dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintWidth_percent="0.86"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
         <com.beaware.app.ui.ParticleVisualizerView
             android:id="@+id/particleVisualizerView"
@@ -105,6 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="@string/protection_inactive"
+        android:textAllCaps="true"
         android:textColor="@color/inactive_gray"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -143,6 +133,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/glass_notification"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -174,7 +165,7 @@
         android:layout_height="74dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="28dp"
-        android:background="@drawable/bg_glass_circle"
+        android:background="@drawable/bg_glass_circle_transperent"
         android:clipToOutline="true"
         android:outlineProvider="background"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -208,7 +199,7 @@
         android:layout_width="92dp"
         android:layout_height="92dp"
         android:layout_marginBottom="26dp"
-        android:background="@drawable/bg_glass_circle"
+        android:background="@drawable/bg_glass_purple"
         android:clipToOutline="true"
         android:outlineProvider="background"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -245,7 +236,7 @@
         android:layout_height="74dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="28dp"
-        android:background="@drawable/bg_glass_circle"
+        android:background="@drawable/bg_glass_circle_transperent"
         android:clipToOutline="true"
         android:outlineProvider="background"
         app:layout_constraintBottom_toBottomOf="parent"

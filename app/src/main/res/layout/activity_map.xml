@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
     tools:context=".ui.MapActivity">
 
     <!-- Toolbar -->
@@ -12,13 +11,16 @@
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary_dark"
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_back"
         app:navigationIconTint="@color/white"
-        app:title="Danger Zones"
+        app:title="Alert Zones"
+        app:titleCentered="true"
         app:titleTextColor="@color/white" />
 
     <!-- Map View -->
@@ -26,19 +28,22 @@
         android:id="@+id/mapView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/cardLegend"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <!-- Legend Card -->
+    <!-- Simple Floating Legend Card (bottom) -->
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardLegend"
+        android:id="@+id/legendCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardBackgroundColor="@color/primary_dark"
-        app:cardCornerRadius="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        app:cardBackgroundColor="#CC1A1A2E"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -52,37 +57,47 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🗺️ Danger Zone Map"
+                android:text="High Alert Zones"
                 android:textColor="@color/white"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Red markers indicate locations where critical danger alerts (Level 1) were detected. This data is anonymous and community-sourced."
+                android:layout_marginTop="4dp"
+                android:text="Remove headphones in marked areas"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
+            <!-- Zone Types -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <View
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:background="@drawable/bg_danger_dot" />
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Level 1 Critical Alert Location"
-                    android:textColor="@color/alert_red"
+                    android:text="🚑 Sirens / Emergency"
+                    android:textColor="#FF5252"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="🚌 Heavy Traffic / Vehicles"
+                    android:textColor="#FF6E40"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="🚲 Bells / Bikes / Pedestrians"
+                    android:textColor="#FFAB40"
                     android:textSize="12sp" />
 
             </LinearLayout>

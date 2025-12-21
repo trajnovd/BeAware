@@ -3,12 +3,14 @@ package com.beaware.app.ui
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.beaware.app.R
 import com.beaware.app.data.PreferencesManager
 import com.beaware.app.databinding.ActivitySettingsBinding
+import eightbitlab.com.blurview.RenderScriptBlur
 
 /**
  * Settings activity - Emergency contact configuration, alert preferences, and permissions status.
@@ -26,6 +28,7 @@ class SettingsActivity : AppCompatActivity() {
         preferencesManager = PreferencesManager(this)
 
         setupToolbar()
+        setupBlur()
         setupUI()
         loadSettings()
         updatePermissionStatus()
@@ -34,6 +37,24 @@ class SettingsActivity : AppCompatActivity() {
     private fun setupToolbar() {
         binding.toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
+    private fun setupBlur() {
+        // Setup blur effect for background (static blur for better scroll performance)
+        val decorView = window.decorView
+        val rootView = decorView.findViewById<ViewGroup>(android.R.id.content)
+        val windowBackground = decorView.background
+
+        try {
+            // Background blur (placed above background image, below all UI)
+            binding.blurBackgroundSettings
+                .setupWith(rootView, RenderScriptBlur(this))
+                .setFrameClearDrawable(windowBackground)
+                .setBlurRadius(22f)
+                .setBlurAutoUpdate(false)
+        } catch (e: Exception) {
+            // Keep the translucent glass fallback background
         }
     }
 

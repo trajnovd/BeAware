@@ -3,7 +3,7 @@
     <!-- Brand Colors -->
     <color name="primary">#1A1A2E</color>
     <color name="primary_dark">#0F0F1A</color>
-    <color name="accent">#E94560</color>
+    <color name="accent">#FFFFFF</color>
     
     <!-- Alert Colors -->
     <color name="alert_red">#FF0000</color>
@@ -30,5 +30,9 @@
     <color name="button_active">#E94560</color>
     <color name="button_inactive">#333333</color>
     <color name="button_safe">#00C853</color>
+
+    <!-- Awareness Zone Colors -->
+    <color name="awareness_red">#FF5252</color>
+    <color name="awareness_yellow">#FFC107</color>
 </resources>
 
