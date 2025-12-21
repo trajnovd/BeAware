@@ -177,7 +177,7 @@ BeAware acts as an always-on safety layer that listens *for* you:
 
 | Home Screen | Alert Overlay | Settings |
 |-------------|---------------|----------|
-| ![Home](docs/screenshots/home.png) | ![Alert](docs/screenshots/alert.png) | ![Settings](docs/screenshots/settings.png) |
+| ![Home](images/main_screen.png) | ![Alert](images/alert.png) | ![Settings](images/settings_view.png) |
 
 ### Demo Video
 
