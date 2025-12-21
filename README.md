@@ -26,13 +26,13 @@ Noise-canceling headphones create a dangerous "audio bubble" that lowers awarene
 
 | Urgency Level | Sounds Detected | Response |
 |---------------|-----------------|----------|
-| 🔴 **Level 1: Critical** | Screams, Shouts for Help, Physical Struggle, Glass Breaking, Gunshots | Music stops, continuous alert beeping (30 seconds), repeating vibration, full-screen alarm that wakes phone even when locked. 30-second countdown to emergency SMS if user doesn't tap "I'm Safe" |
+| 🟢 **Level 1: Awareness** | Bicycle Bells, Chimes, Bus Sounds, Dog Barking, Footsteps | Soft ping sound. Voice announcement only for bells/chimes ("A bike is coming") with volume at 10% for 5 seconds. All other sounds just play ping. |
 | 🟡 **Level 2: Caution** | Sirens, Car Horns, Vehicle Alarms, Emergency Vehicles | Music lowers to 10%, double ping sound, Voice announcement according to the detected sound ("An ambulance is coming"), volume restores after 5 seconds. |
-| 🟢 **Level 3: Awareness** | Bicycle Bells, Chimes, Bus Sounds, Dog Barking, Footsteps | Soft ping sound. Voice announcement only for bells/chimes ("A bike is coming") with volume at 10% for 5 seconds. All other sounds just play ping. |
+| 🔴 **Level 3: Critical** | Screams, Shouts for Help, Physical Struggle, Glass Breaking, Gunshots | Music stops, continuous alert beeping (30 seconds), repeating vibration, full-screen alarm that wakes phone even when locked. 30-second countdown to emergency SMS if user doesn't tap "I'm Safe" |
 
 ### Emergency Features
-- **Automatic SMS** — Level 1 critical alerts send the location to emergency contact if "I'm Safe" isn't pressed within 30 seconds
-- **Full-Screen Alarm** — Level 1 alerts wake the phone screen even when locked, like an alarm clock
+- **Automatic SMS** — Level 3 critical alerts send the location to emergency contact if "I'm Safe" isn't pressed within 30 seconds
+- **Full-Screen Alarm** — Level 3 alerts wake the phone screen even when locked, like an alarm clock
 - **Location Sharing** — GPS coordinates are included in emergency SMS
 - **Music Resume** — Music automatically resumes after alerts are dismissed
 
@@ -46,7 +46,7 @@ Noise-canceling headphones create a dangerous "audio bubble" that lowers awarene
 - **Headphone Optimized** — Voice announcements play through music stream for clear audio through headphones
 
 ### Users remain informed using the Danger Zone Map
-- **Community Safety Map** — Users can view anonymous Level 1 critical alert locations on an interactive map
+- **Community Safety Map** — Users can view anonymous Level 3 critical alert locations on an interactive map
 - **OpenStreetMap Integration** — No API keys required and works offline
 - **Visual Indicators** — Red markers and danger zones show where critical incidents were detected
 
@@ -66,7 +66,7 @@ Noise-canceling headphones create a dangerous "audio bubble" that lowers awarene
 
 5. **Optimized Audio Processing** — The model uses 960ms audio chunks from an unprocessed microphone source giving better detection range, the classification gives priority to dangerous sounds as opposed to regular occurences such as speech and common noises.
 
-7. **Alarm-Style Critical Alerts** — Level 1 alerts wake the phone screen even when locked, ensuring that critical dangers are always pushed through.
+7. **Alarm-Style Critical Alerts** — Level 3 alerts wake the phone screen even when locked, ensuring that critical dangers are always pushed through.
 
 ---
 
@@ -135,7 +135,7 @@ Noise-canceling headphones create a dangerous "audio bubble" that lowers awarene
 │         │                                                   │
 │    ┌────┴────┬────────────┐                                 │
 │    ▼         ▼            ▼                                 │
-│  🔴 L1    🟡 L2       🟢 L3                                │
+│  🔴 L3    🟡 L2       🟢 L1                                │
 │  STOP    Duck 10%    Ping                                  │
 │  + Beep  + Ping      + TTS (bells only)                    │
 │  + Vib   + TTS       + Duck 10% (bells only)                │
@@ -188,9 +188,9 @@ To test BeAware:
 4. Configure TTS preferences (enable/disable categories)
 5. Tap the power button (center) to activate protection
 6. Test alerts:
-   - **Level 1**: Play screaming/shouting sounds → Full alarm with continuous beeping
+   - **Level 3**: Play screaming/shouting sounds → Full alarm with continuous beeping
    - **Level 2**: Play siren sounds → Double ping + "An ambulance is coming" (volume at 10%)
-   - **Level 3**: Play bell/chime sounds → "A bike is coming" (volume at 10%)
+   - **Level 1**: Play bell/chime sounds → "A bike is coming" (volume at 10%)
 7. View danger zones on the map (left button)
 
 ---
