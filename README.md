@@ -72,50 +72,26 @@ Noise-canceling headphones create a dangerous "audio bubble" that lowers awarene
 
 ## Impact & Feasibility
 
-### Who Benefits
+### Who Benefits?
 
-- **Urban Pedestrians** — Commuters walking through busy city streets
-- **Runners & Joggers** — Athletes exercising outdoors with music
-- **Cyclists** — Riders who use bone-conduction or traditional headphones
-- **Late-Night Walkers** — Anyone navigating potentially unsafe areas after dark
+- **Commuters walking through busy city streets** 
+- **Athletes exercising outdoors with music**
+- **Bike Riders using headphones** 
+- **Anyone navigating potentially unsafe areas after dark**
 
 ### Real-World Application
 
 - **Estimated Market** — 300M+ noise-canceling headphone users globally
-- **Zero Infrastructure Required** — Works with any Android phone, any headphones
-- **No Subscription Model** — Free to use, privacy-first design
+- **Zero Infrastructure Required** — Works with any phone, any headphones
 
-### Expansion Potential
+### Potential Expansion 
 
-- Smartwatch companion app with haptic alerts
+- Smartwatch companion app with haptic alerts for users
 - Integration with smart hearing aids
 - Custom sound training for specific environments (construction sites, factories)
 
 ---
 
-## Technical Implementation
-
-### Key Technical Choices
-
-| Component | Technology | Rationale |
-|-----------|------------|-----------|
-| **Platform** | Native Android (Kotlin) | Direct hardware access for low-latency audio |
-| **AI Model** | YAMNet via MediaPipe | 521 sound classes, optimized for mobile, runs in ~50ms |
-| **Audio Capture** | AudioRecord API @ 16kHz, UNPROCESSED source | Matches YAMNet requirements, 960ms chunks for optimal accuracy, raw audio for better range |
-| **Media Control** | AudioFocus API | System-level integration to pause/duck other apps, automatic music resume |
-| **Text-to-Speech** | Android TTS Engine | Customizable voice announcements with volume ducking |
-| **Background Processing** | Foreground Service | Ensures continuous monitoring even when screen locked |
-| **Mapping** | OSMDroid (OpenStreetMap) | Offline-capable maps for danger zone visualization, no API keys required |
-| **UI Effects** | BlurView, Custom Views | Glass/blur effects, 3D particle audio visualizer, liquid blur overlay |
-
-### Main Challenges Solved
-
-1. **Real-time Classification** — Achieved <500ms detection-to-alert latency using optimized TFLite inference with 960ms audio chunks
-2. **Battery Efficiency** — Foreground service with efficient audio buffering keeps drain under 5%/hour
-3. **False Positive Reduction** — Priority filtering ignores speech/silence when critical sounds detected, confidence thresholds per category (0.25 for sirens, 0.60 for speech)
-4. **Lock Screen Alerts** — Full-screen intent notifications with WAKE_LOCK to wake phone like an alarm, even when locked
-5. **Audio Range** — UNPROCESSED microphone source disables automatic gain control and noise suppression, increasing detection range from ~5m to ~15m+
-6. **TTS Volume Management** — Automatic volume ducking to 10% during announcements, restoration after 5 seconds, works even when screen is off
 
 ### Overall Functionality
 
@@ -124,20 +100,20 @@ Noise-canceling headphones create a dangerous "audio bubble" that lowers awarene
 │                        BeAware Flow                         │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│  📱 Phone Microphone                                        │
+│   Phone Microphone                                          │
 │         │                                                   │
 │         ▼                                                   │
-│  🎙️ AudioRecord (16kHz, 960ms chunks, UNPROCESSED source)  │
+│   AudioRecord (16kHz, 960ms chunks, UNPROCESSED source)     │
 │         │                                                   │
 │         ▼                                                   │
-│  🧠 YAMNet Classification (on-device)                       │
+│   YAMNet Classification (on-device)                         │
 │         │                                                   │
 │         ▼                                                   │
-│  🎯 Priority Filter + Urgency Mapper (521 classes → 3 levels)│
+│  Priority Filter + Urgency Mapper (521 classes → 3 levels)  │
 │         │                                                   │
 │    ┌────┴────┬────────────┐                                 │
 │    ▼         ▼            ▼                                 │
-│  🔴 L1    🟡 L2       🟢 L3                                  │
+│  🔴 L1    🟡 L2       🟢 L3                                │
 │  STOP    Duck 10%    Ping                                  │
 │  + Beep  + Ping      + TTS (bells only)                    │
 │  + Vib   + TTS       + Duck 10% (bells only)                │
