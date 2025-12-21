@@ -2,54 +2,52 @@
 
 **AI-Powered "Sixth Sense" for Pedestrians with Noise-Canceling Headphones**
 
-BeAware is a native Android app that uses on-device AI to detect environmental dangers and alert users who are isolated in their audio bubble. It hijacks your audio experience when it matters most—keeping you aware and safe.
+BeAware, a native Android app using on-device pre-trained AI models to detect environmental dangers and alert users with noise canceling headphones or other hearing impairments. It hijacks the audio experience when it matters most without interfering with enjoyment.
 
 ![BeAware App Mockup](beaware_mockup.png)
 ---
 
 ## Problem
 
-Noise-canceling headphones create a dangerous "audio bubble" that blocks critical environmental sounds:
+Noise-canceling headphones create a dangerous "audio bubble" that lowers awareness and makes it so that users may not be aware of their surroundings like:
 
-- 🚨 **Emergency vehicles** — Sirens go unheard until dangerously close
-- 🚗 **Traffic hazards** — Car horns, tire screeches arrive without warning  
-- ⚠️ **Personal safety** — Shouting, fighting, or aggressive situations nearby go unnoticed
-- 🚴 **Cycling risks** — Bicycle bells and warnings from behind are muffled
+- **Incomming emergency vehicles** 
+- **Traffic hazards like honking or tire screeches**  
+- **Threats to personal safety like shouting or fighting**
+- **Bicycle bells and noises**
 
 **Every year, pedestrians with headphones are involved in preventable accidents because they simply couldn't hear the danger approaching.**
 
 ---
 
-## Solution
-
-BeAware acts as an always-on safety layer that listens *for* you:
+## Our Solution - BeAware
 
 ### Core Features
 
 | Urgency Level | Sounds Detected | Response |
 |---------------|-----------------|----------|
-| 🔴 **Level 1: Critical** | Screaming, Shouting for Help, Physical Struggle, Glass Breaking, Gunshots | Music STOPS, continuous alert beeping (30 seconds), repeating vibration, full-screen alarm that wakes phone even when locked. 30-second countdown to emergency SMS if user doesn't tap "I'm Safe" |
-| 🟡 **Level 2: Caution** | Sirens, Car Horns, Vehicle Alarms, Emergency Vehicles | Music lowers to 10%, double ping sound, TTS announcement for sirens ("An ambulance is coming"), volume restores after 5 seconds. NO vibration |
-| 🟢 **Level 3: Awareness** | Bicycle Bells, Chimes, Bus Sounds, Dog Barking, Footsteps | Soft ping sound. TTS announcement ONLY for bells/chimes ("A bike is coming") with volume at 10% for 5 seconds. All other sounds just play ping. NO vibration |
+| 🔴 **Level 1: Critical** | Screams, Shouts for Help, Physical Struggle, Glass Breaking, Gunshots | Music stops, continuous alert beeping (30 seconds), repeating vibration, full-screen alarm that wakes phone even when locked. 30-second countdown to emergency SMS if user doesn't tap "I'm Safe" |
+| 🟡 **Level 2: Caution** | Sirens, Car Horns, Vehicle Alarms, Emergency Vehicles | Music lowers to 10%, double ping sound, Voice announcement according to the detected sound ("An ambulance is coming"), volume restores after 5 seconds. |
+| 🟢 **Level 3: Awareness** | Bicycle Bells, Chimes, Bus Sounds, Dog Barking, Footsteps | Soft ping sound. Voice announcement only for bells/chimes ("A bike is coming") with volume at 10% for 5 seconds. All other sounds just play ping. |
 
 ### Emergency Features
-- **Automatic SMS** — Level 1 critical alerts send your location to emergency contact if you don't tap "I'm Safe" within 30 seconds
-- **Full-Screen Alarm** — Level 1 alerts wake your phone screen even when locked, like an alarm clock
-- **Location Sharing** — GPS coordinates included in emergency SMS
+- **Automatic SMS** — Level 1 critical alerts send the location to emergency contact if "I'm Safe" isn't pressed within 30 seconds
+- **Full-Screen Alarm** — Level 1 alerts wake the phone screen even when locked, like an alarm clock
+- **Location Sharing** — GPS coordinates are included in emergency SMS
 - **Music Resume** — Music automatically resumes after alerts are dismissed
 
-### Voice Announcements (TTS)
-- **Customizable Categories** — Enable/disable TTS for specific sound types in Settings:
-  - 🚲 **Bells/Bikes** — "A bike is coming"
-  - 🚑 **Sirens/Emergencies** — "An ambulance is coming"
-  - 🚌 **Vehicles** — "A bus is arriving", "A train is approaching"
-  - 🔔 **General Awareness** — "Dog nearby", "Footsteps nearby", etc.
-- **Smart Volume Control** — Music automatically lowers to 10% during TTS announcements, then restores after 5 seconds
-- **Headphone Optimized** — TTS plays through music stream for clear audio through headphones
+### Voice Announcement and Quality of Life
+- **Customizable Categories** — The user can enable/disable Voice announcements for specific sound types in Settings:
+  - **Bells/Bikes** — "A bike is coming"
+  - **Sirens/Emergencies** — "An ambulance is coming"
+  - **Vehicles** — "A bus is arriving", "A train is approaching"
+  - **General Awareness** — "Dog nearby", "Footsteps nearby", etc.
+- **Smart Volume Control** — Music automatically lowers to 10% during Voice announcements, then restores after 5 seconds
+- **Headphone Optimized** — Voice announcements play through music stream for clear audio through headphones
 
-### Danger Zone Map
-- **Community Safety Map** — View anonymous Level 1 critical alert locations on an interactive map
-- **OpenStreetMap Integration** — No API keys required, works offline
+### Users remain informed using the Danger Zone Map
+- **Community Safety Map** — Users can view anonymous Level 1 critical alert locations on an interactive map
+- **OpenStreetMap Integration** — No API keys required and works offline
 - **Visual Indicators** — Red markers and danger zones show where critical incidents were detected
 
 ---
@@ -58,38 +56,37 @@ BeAware acts as an always-on safety layer that listens *for* you:
 
 ### What Makes BeAware Different
 
-1. **100% On-Device AI** — No cloud processing. Your audio never leaves your phone. Zero latency, maximum privacy.
+1. **100% On-Device AI** — Audio is directly processed on the application/phone, making sure data is safe and processed in real time.
 
-2. **Intelligent Urgency Routing** — Not all sounds deserve the same response. A bicycle bell gets a soft ping with optional TTS; a siren gets volume ducking and TTS; screaming gets full alarm takeover.
+2. **Balance between safety and comfort** — User is kept safe, without having their experience ruined. Additionaly, different events get adequate responses. A bicycle bell gets a soft ping with optional Voice Announcements, a siren gets volume ducking and a Voice Announcements, while screaming gets full alarm takeover.
 
-3. **Smart TTS System** — Customizable voice announcements that only trigger for enabled categories, with automatic volume management.
+3. **Smart Alert System** — Customizable voice announcements that only trigger for enabled categories, with automatic volume management.
 
-4. **Audio Hijacking** — Uses Android's AudioFocus API to *pause* or *duck* other apps (Spotify, YouTube, etc.) rather than just playing over them. Music automatically resumes after alerts.
+4. **Audio Hijacking** — The app uses Android's AudioFocus API to *pause* or *duck* other apps (Spotify, YouTube, etc.) rather than just playing over them. Music automatically resumes after alerts.
 
-5. **Optimized Audio Processing** — 960ms audio chunks (YAMNet's optimal window), UNPROCESSED microphone source for better detection range, priority filtering to ignore speech/silence when critical sounds are detected.
+5. **Optimized Audio Processing** — The model uses 960ms audio chunks from an unprocessed microphone source giving better detection range, the classification gives priority to dangerous sounds as opposed to regular occurences such as speech and common noises.
 
-6. **Alarm-Style Critical Alerts** — Level 1 alerts wake your phone screen even when locked, ensuring you never miss a critical danger.
+7. **Alarm-Style Critical Alerts** — Level 1 alerts wake the phone screen even when locked, ensuring that critical dangers are always pushed through.
 
 ---
 
 ## Impact & Feasibility
 
-### Who Benefits
+### Who Benefits?
 
-- **Urban Pedestrians** — Commuters walking through busy city streets
-- **Runners & Joggers** — Athletes exercising outdoors with music
-- **Cyclists** — Riders who use bone-conduction or traditional headphones
-- **Late-Night Walkers** — Anyone navigating potentially unsafe areas after dark
+- **Commuters walking through busy city streets** 
+- **Athletes exercising outdoors with music**
+- **Bike Riders using headphones** 
+- **Anyone navigating potentially unsafe areas after dark**
 
 ### Real-World Application
 
 - **Estimated Market** — 300M+ noise-canceling headphone users globally
-- **Zero Infrastructure Required** — Works with any Android phone, any headphones
-- **No Subscription Model** — Free to use, privacy-first design
+- **Zero Infrastructure Required** — Works with any phone, any headphones
 
-### Expansion Potential
+### Potential Expansion 
 
-- Smartwatch companion app with haptic alerts
+- Smartwatch companion app with haptic alerts for users
 - Integration with smart hearing aids
 - Custom sound training for specific environments (construction sites, factories)
 
@@ -125,20 +122,20 @@ BeAware acts as an always-on safety layer that listens *for* you:
 │                        BeAware Flow                         │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│  📱 Phone Microphone                                        │
+│   Phone Microphone                                          │
 │         │                                                   │
 │         ▼                                                   │
-│  🎙️ AudioRecord (16kHz, 960ms chunks, UNPROCESSED source)  │
+│   AudioRecord (16kHz, 960ms chunks, UNPROCESSED source)     │
 │         │                                                   │
 │         ▼                                                   │
-│  🧠 YAMNet Classification (on-device)                       │
+│   YAMNet Classification (on-device)                         │
 │         │                                                   │
 │         ▼                                                   │
-│  🎯 Priority Filter + Urgency Mapper (521 classes → 3 levels)│
+│  Priority Filter + Urgency Mapper (521 classes → 3 levels)  │
 │         │                                                   │
 │    ┌────┴────┬────────────┐                                 │
 │    ▼         ▼            ▼                                 │
-│  🔴 L1    🟡 L2       🟢 L3                                  │
+│  🔴 L1    🟡 L2       🟢 L3                                │
 │  STOP    Duck 10%    Ping                                  │
 │  + Beep  + Ping      + TTS (bells only)                    │
 │  + Vib   + TTS       + Duck 10% (bells only)                │
