@@ -2,19 +2,19 @@
 
 **AI-Powered "Sixth Sense" for Pedestrians with Noise-Canceling Headphones**
 
-BeAware is a native Android app that uses on-device AI to detect environmental dangers and alert users who are isolated in their audio bubble. It hijacks your audio experience when it matters most—keeping you aware and safe.
+BeAware, a native Android app using on-device pre-trained AI models to detect environmental dangers and alert users with noise canceling headphones or other hearing impairments. It hijacks the audio experience when it matters most without interfering with enjoyment.
 
 ![BeAware App Mockup](beaware_mockup.png)
 ---
 
 ## Problem
 
-Noise-canceling headphones create a dangerous "audio bubble" that blocks critical environmental sounds:
+Noise-canceling headphones create a dangerous "audio bubble" that lowers awareness and makes it so that users may not be aware of their surroundings like:
 
-- 🚨 **Emergency vehicles** — Sirens go unheard until dangerously close
-- 🚗 **Traffic hazards** — Car horns, tire screeches arrive without warning  
-- ⚠️ **Personal safety** — Shouting, fighting, or aggressive situations nearby go unnoticed
-- 🚴 **Cycling risks** — Bicycle bells and warnings from behind are muffled
+- **Incomming emergency vehicles** 
+- **Traffic hazards like honking or tire screeches**  
+- **Threats to personal safety like shouting or fighting**
+- **Bicycle bells and noises**
 
 **Every year, pedestrians with headphones are involved in preventable accidents because they simply couldn't hear the danger approaching.**
 
