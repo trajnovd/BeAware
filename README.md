@@ -4,6 +4,7 @@
 
 BeAware is a native Android app that uses on-device AI to detect environmental dangers and alert users who are isolated in their audio bubble. It hijacks your audio experience when it matters most—keeping you aware and safe.
 
+![BeAware App Mockup](beaware_mockup.png)
 ---
 
 ## Problem
