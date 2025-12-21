@@ -56,17 +56,17 @@ Noise-canceling headphones create a dangerous "audio bubble" that lowers awarene
 
 ### What Makes BeAware Different
 
-1. **100% On-Device AI** — No cloud processing. Your audio never leaves your phone. Zero latency, maximum privacy.
+1. **100% On-Device AI** — Audio is directly processed on the application/phone, making sure data is safe and processed in real time.
 
-2. **Intelligent Urgency Routing** — Not all sounds deserve the same response. A bicycle bell gets a soft ping with optional TTS; a siren gets volume ducking and TTS; screaming gets full alarm takeover.
+2. **Balance between safety and comfort** — User is kept safe, without having their experience ruined. Additionaly, different events get adequate responses. A bicycle bell gets a soft ping with optional Voice Announcements, a siren gets volume ducking and a Voice Announcements, while screaming gets full alarm takeover.
 
-3. **Smart TTS System** — Customizable voice announcements that only trigger for enabled categories, with automatic volume management.
+3. **Smart Alert System** — Customizable voice announcements that only trigger for enabled categories, with automatic volume management.
 
-4. **Audio Hijacking** — Uses Android's AudioFocus API to *pause* or *duck* other apps (Spotify, YouTube, etc.) rather than just playing over them. Music automatically resumes after alerts.
+4. **Audio Hijacking** — The app uses Android's AudioFocus API to *pause* or *duck* other apps (Spotify, YouTube, etc.) rather than just playing over them. Music automatically resumes after alerts.
 
-5. **Optimized Audio Processing** — 960ms audio chunks (YAMNet's optimal window), UNPROCESSED microphone source for better detection range, priority filtering to ignore speech/silence when critical sounds are detected.
+5. **Optimized Audio Processing** — The model uses 960ms audio chunks from an unprocessed microphone source giving better detection range, the classification gives priority to dangerous sounds as opposed to regular occurences such as speech and common noises.
 
-6. **Alarm-Style Critical Alerts** — Level 1 alerts wake your phone screen even when locked, ensuring you never miss a critical danger.
+7. **Alarm-Style Critical Alerts** — Level 1 alerts wake the phone screen even when locked, ensuring that critical dangers are always pushed through.
 
 ---
 
