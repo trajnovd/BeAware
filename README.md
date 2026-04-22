@@ -136,12 +136,12 @@ Noise-canceling headphones create a dangerous "audio bubble" that lowers awarene
 │    ┌────┴────┬────────────┐                                 │
 │    ▼         ▼            ▼                                 │
 │  🔴 L1    🟡 L2       🟢 L3                                │
-│  STOP    Duck 10%    Ping                                  │
-│  + Beep  + Ping      + TTS (bells only)                    │
+│  STOP    Duck 10%    Ping                                   │
+│  + Beep  + Ping      + TTS (bells only)                     │
 │  + Vib   + TTS       + Duck 10% (bells only)                │
 │  + Alarm (sirens)    + Restore 5s                           │
 │  + SMS   + Restore 5s                                       │
-│  (30s)   (NO vib)    (NO vib)                              │
+│  (30s)   (NO vib)    (NO vib)                               │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
